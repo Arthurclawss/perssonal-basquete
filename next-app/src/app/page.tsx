@@ -1,7 +1,5 @@
 import Header from "@/components/Header";
 import Hero from "@/components/Hero";
-import StatsBar from "@/components/StatsBar";
-import Methodology from "@/components/Methodology";
 import Programs from "@/components/Programs";
 import About from "@/components/About";
 import FinalCTA from "@/components/FinalCTA";
@@ -12,8 +10,6 @@ export default function Home() {
     <main className="min-h-screen bg-brand-black">
       <Header />
       <Hero />
-      <StatsBar />
-      <Methodology />
       <Programs />
       <About />
       <FinalCTA />

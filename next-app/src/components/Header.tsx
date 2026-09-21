@@ -8,10 +8,10 @@ import { ArrowUpRight, Menu, X } from "lucide-react";
 const instagramUrl = "https://www.instagram.com/coachrafaelmelo/";
 
 const navigation = [
-  { label: "Método", href: "#metodologia" },
+  { label: "Resultados", href: "#resultados" },
+  { label: "Depoimentos", href: "#depoimentos" },
   { label: "Programas", href: "#programas" },
   { label: "Sobre", href: "#sobre" },
-  { label: "Resultados", href: "#resultados" },
 ];
 
 export default function Header() {
