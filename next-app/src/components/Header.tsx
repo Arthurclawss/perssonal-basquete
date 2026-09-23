@@ -9,9 +9,9 @@ const instagramUrl = "https://www.instagram.com/coachrafaelmelo/";
 
 const navigation = [
   { label: "Resultados", href: "#resultados" },
+  { label: "Sobre", href: "#sobre" },
   { label: "Depoimentos", href: "#depoimentos" },
   { label: "Programas", href: "#programas" },
-  { label: "Sobre", href: "#sobre" },
 ];
 
 export default function Header() {

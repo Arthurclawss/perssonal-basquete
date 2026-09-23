@@ -123,6 +123,8 @@ export default function Hero() {
           transitionGallerySceneRef.current?.querySelectorAll("[data-gallery-split-panel]") ?? [];
         const trainingCards =
           trainingSceneRef.current?.querySelectorAll("[data-training-card]") ?? [];
+        const trainingBackdrop =
+          trainingSceneRef.current?.querySelector("[data-training-backdrop]") ?? null;
         const feedbackCards =
           feedbackSceneRef.current?.querySelectorAll("[data-feedback-card]") ?? [];
         const feedbackCopy =
@@ -178,16 +180,52 @@ export default function Hero() {
         gsap.set(transitionLogoRef.current, { autoAlpha: 0, scale: 0.94, rotate: -1.5 });
         gsap.set(testimonialsIntroRef.current?.querySelectorAll("[data-intro-copy]") ?? [], {
           autoAlpha: 0,
-          x: 36,
+          x: -88,
+          y: 28,
+          scale: 0.9,
+          rotateY: -14,
+          rotateZ: -1.2,
+          filter: "blur(22px)",
+          clipPath: "inset(0 32% 0 0 round 2.6rem 0.65rem 4.8rem 0.65rem)",
+          transformPerspective: 1100,
+          transformOrigin: "0% 60%",
+          force3D: true,
         });
         gsap.set(testimonialsIntroRef.current?.querySelectorAll("[data-masked-heading-word]") ?? [], {
-          yPercent: 118,
-          rotate: 2,
+          autoAlpha: 0,
+          yPercent: 128,
+          rotateX: -64,
+          rotateZ: (index) => (index % 2 === 0 ? 2.5 : -1.5),
+          filter: "blur(12px)",
+          transformPerspective: 900,
           transformOrigin: "0% 100%",
+          force3D: true,
+        });
+        gsap.set(testimonialsIntroRef.current?.querySelectorAll("[data-intro-detail]") ?? [], {
+          autoAlpha: 0,
+          y: 30,
+          filter: "blur(10px)",
+          force3D: true,
+        });
+        gsap.set(testimonialsIntroRef.current?.querySelectorAll("[data-about-line]") ?? [], {
+          scaleX: 0,
+          transformOrigin: "0% 50%",
+        });
+        gsap.set(testimonialsIntroRef.current?.querySelectorAll("[data-about-pillar]") ?? [], {
+          autoAlpha: 0,
+          y: 22,
+          clipPath: "inset(0 100% 0 0)",
+          force3D: true,
         });
         gsap.set(trainingCards, {
           autoAlpha: 0,
           yPercent: (index) => [52, 68, 58][index] ?? 58,
+          force3D: true,
+        });
+        gsap.set(trainingBackdrop, {
+          autoAlpha: 0,
+          scale: 1.025,
+          clipPath: "inset(48% 0 48% 0)",
           force3D: true,
         });
         gsap.set(feedbackCards, {
@@ -348,70 +386,133 @@ export default function Hero() {
             },
           )
           .to(transitionGallerySceneRef.current, { autoAlpha: 0, duration: 0.01 })
+          .addLabel("introReveal")
           .to(
             testimonialsIntroRef.current?.querySelectorAll("[data-intro-copy]") ?? [],
             {
               autoAlpha: 1,
               x: 0,
-              duration: 0.46,
-              stagger: 0.08,
-              ease: "power3.out",
+              y: 0,
+              scale: 1,
+              rotateY: 0,
+              rotateZ: 0,
+              filter: "blur(0px)",
+              clipPath: "inset(0 0% 0 0 round 2.6rem 0.65rem 4.8rem 0.65rem)",
+              duration: 1.2,
+              ease: "power4.out",
+              force3D: true,
             },
+            "introReveal",
           )
           .to(
             testimonialsIntroRef.current?.querySelectorAll("[data-masked-heading-word]") ?? [],
             {
+              autoAlpha: 1,
               yPercent: 0,
-              rotate: 0,
-              duration: 0.72,
-              stagger: 0.055,
+              rotateX: 0,
+              rotateZ: 0,
+              filter: "blur(0px)",
+              duration: 0.9,
+              stagger: { amount: 0.3 },
               ease: "power4.out",
+              force3D: true,
             },
-            "-=0.3",
+            "introReveal",
           )
-          .to({}, { duration: 0.8 })
+          .to(
+            testimonialsIntroRef.current?.querySelectorAll("[data-intro-detail]") ?? [],
+            {
+              autoAlpha: 1,
+              y: 0,
+              filter: "blur(0px)",
+              duration: 1,
+              stagger: 0.08,
+              ease: "power3.out",
+              force3D: true,
+            },
+            "introReveal+=0.2",
+          )
+          .to(
+            testimonialsIntroRef.current?.querySelectorAll("[data-about-line]") ?? [],
+            {
+              scaleX: 1,
+              duration: 0.9,
+              stagger: 0.08,
+              ease: "power3.inOut",
+            },
+            "introReveal+=0.28",
+          )
+          .to(
+            testimonialsIntroRef.current?.querySelectorAll("[data-about-pillar]") ?? [],
+            {
+              autoAlpha: 1,
+              y: 0,
+              clipPath: "inset(0 0% 0 0)",
+              duration: 0.82,
+              stagger: 0.08,
+              ease: "power3.out",
+              force3D: true,
+            },
+            "introReveal+=0.48",
+          )
+          .to({}, { duration: 1.5 })
           .addLabel("trainingOverlay")
+          .addLabel("aboutExit", "trainingOverlay")
           .to(
             testimonialsIntroRef.current,
             {
               yPercent: -110,
-              duration: 4.1,
-              ease: "none",
+              duration: 1.45,
+              ease: "power2.inOut",
               force3D: true,
             },
-            "trainingOverlay",
+            "aboutExit",
           )
           .to(
             testimonialsIntroRef.current,
             {
               autoAlpha: 0,
-              duration: 1.45,
-              ease: "power1.in",
+              duration: 0.75,
+              ease: "power2.in",
             },
-            "trainingOverlay+=1.65",
+            "aboutExit+=0.35",
           )
+          .addLabel("backgroundReveal", "aboutExit+=1.46")
+          .to(
+            trainingBackdrop,
+            {
+              autoAlpha: 1,
+              scale: 1,
+              clipPath: "inset(0% 0 0% 0)",
+              duration: 0.62,
+              ease: "power3.inOut",
+              force3D: true,
+            },
+            "backgroundReveal",
+          )
+          .addLabel("videoSequence", "backgroundReveal+=0.9")
           .to(
             trainingCards,
             {
               yPercent: 0,
-              duration: 3.3,
-              stagger: 0.18,
+              duration: 2.6,
+              stagger: 0.32,
               ease: "none",
               force3D: true,
             },
-            "trainingOverlay",
+            "videoSequence",
           )
           .to(
             trainingCards,
             {
               autoAlpha: 1,
-              duration: 0.7,
-              stagger: 0.12,
-              ease: "power1.out",
+              duration: 0.72,
+              stagger: 0.24,
+              ease: "power2.out",
             },
-            "trainingOverlay",
+            "videoSequence",
           )
-          .addLabel("videosExit", "trainingOverlay+=3.55")
+          .addLabel("videosExit", "videoSequence+=3.95")
           .to(
             trainingCards,
             {
@@ -438,9 +539,9 @@ export default function Hero() {
             feedbackCards,
             {
               yPercent: 0,
-              duration: 2.6,
-              stagger: 0.2,
-              ease: "none",
+              duration: 2.35,
+              stagger: 0.16,
+              ease: "power2.out",
               force3D: true,
             },
             "feedbackOverlay",
@@ -449,33 +550,11 @@ export default function Hero() {
             feedbackCards,
             {
               autoAlpha: 1,
-              duration: 0.75,
-              stagger: 0.1,
-              ease: "power1.out",
-            },
-            "feedbackOverlay+=0.05",
-          )
-          .addLabel("feedbackCopy", "feedbackOverlay+=2.5")
-          .to(
-            feedbackCards,
-            {
-              yPercent: (index) => [-170, -192][index] ?? -178,
-              duration: 2.6,
-              stagger: 0.16,
-              ease: "none",
-              force3D: true,
-            },
-            "feedbackCopy",
-          )
-          .to(
-            feedbackCards,
-            {
-              autoAlpha: 0,
-              duration: 0.9,
+              duration: 0.85,
               stagger: 0.12,
-              ease: "power1.in",
+              ease: "power2.out",
             },
-            "feedbackCopy+=0.7",
+            "feedbackOverlay",
           )
           .to(
             feedbackCopy,
@@ -483,14 +562,14 @@ export default function Hero() {
               autoAlpha: 1,
               y: 0,
               filter: "blur(0px)",
-              duration: 2.1,
-              stagger: 0.18,
+              duration: 2.05,
+              stagger: { amount: 0.3 },
               ease: "power3.out",
               force3D: true,
             },
-            "feedbackCopy+=0.25",
+            "feedbackOverlay",
           )
-          .to({}, { duration: 1.05 });
+          .to({}, { duration: 2.2 });
       });
 
       media.add("(prefers-reduced-motion: reduce)", () => {
@@ -504,6 +583,8 @@ export default function Hero() {
           transitionGallerySceneRef.current?.querySelectorAll("[data-gallery-split-panel]") ?? [];
         const trainingCards =
           trainingSceneRef.current?.querySelectorAll("[data-training-card]") ?? [];
+        const trainingBackdrop =
+          trainingSceneRef.current?.querySelector("[data-training-backdrop]") ?? null;
         const feedbackCards =
           feedbackSceneRef.current?.querySelectorAll("[data-feedback-card]") ?? [];
         const feedbackCopy =
@@ -541,16 +622,35 @@ export default function Hero() {
         gsap.set(transitionTrackRef.current, { xPercent: 0 });
         gsap.set(testimonialsIntroRef.current?.querySelectorAll("[data-intro-copy]") ?? [], {
           autoAlpha: 1,
+          filter: "blur(0px)",
+          clipPath: "none",
           clearProps: "transform",
         });
         gsap.set(testimonialsIntroRef.current?.querySelectorAll("[data-masked-heading-word]") ?? [], {
+          autoAlpha: 1,
           yPercent: 0,
-          rotate: 0,
+          rotateX: 0,
+          rotateZ: 0,
+          filter: "blur(0px)",
+        });
+        gsap.set(testimonialsIntroRef.current?.querySelectorAll("[data-intro-detail]") ?? [], {
+          autoAlpha: 1,
+          filter: "blur(0px)",
+          clearProps: "transform",
+        });
+        gsap.set(testimonialsIntroRef.current?.querySelectorAll("[data-about-line]") ?? [], {
+          scaleX: 1,
+        });
+        gsap.set(testimonialsIntroRef.current?.querySelectorAll("[data-about-pillar]") ?? [], {
+          autoAlpha: 1,
+          clipPath: "none",
+          clearProps: "transform",
         });
         gsap.set(trainingCards, {
           autoAlpha: 0,
           clearProps: "transform",
         });
+        gsap.set(trainingBackdrop, { autoAlpha: 0, clipPath: "none", clearProps: "transform" });
         gsap.set(feedbackCards, {
           autoAlpha: 0,
           clearProps: "transform",
@@ -620,10 +720,12 @@ export default function Hero() {
           start: "88% center",
           onEnter: () => {
             gsap.set(testimonialsIntroRef.current, { autoAlpha: 0 });
+            gsap.set(trainingBackdrop, { autoAlpha: 1, scale: 1 });
             gsap.set(trainingCards, { autoAlpha: 1, yPercent: 0 });
           },
           onLeaveBack: () => {
             gsap.set(testimonialsIntroRef.current, { autoAlpha: 1, clearProps: "transform" });
+            gsap.set(trainingBackdrop, { autoAlpha: 0, clearProps: "transform" });
             gsap.set(trainingCards, { autoAlpha: 0, clearProps: "transform" });
           },
         });
@@ -634,22 +736,11 @@ export default function Hero() {
           onEnter: () => {
             gsap.set(trainingCards, { autoAlpha: 0 });
             gsap.set(feedbackCards, { autoAlpha: 1, yPercent: 0 });
+            gsap.set(feedbackCopy, { autoAlpha: 1, clearProps: "transform,filter" });
           },
           onLeaveBack: () => {
             gsap.set(trainingCards, { autoAlpha: 1, yPercent: 0 });
             gsap.set(feedbackCards, { autoAlpha: 0, clearProps: "transform" });
-          },
-        });
-
-        const reducedFeedbackCopyTrigger = ScrollTrigger.create({
-          trigger: sectionRef.current,
-          start: "97% center",
-          onEnter: () => {
-            gsap.set(feedbackCards, { autoAlpha: 0 });
-            gsap.set(feedbackCopy, { autoAlpha: 1, clearProps: "transform,filter" });
-          },
-          onLeaveBack: () => {
-            gsap.set(feedbackCards, { autoAlpha: 1, yPercent: 0 });
             gsap.set(feedbackCopy, { autoAlpha: 0, clearProps: "transform,filter" });
           },
         });
@@ -660,7 +751,6 @@ export default function Hero() {
           reducedHorizontalTrigger.kill();
           reducedVideosTrigger.kill();
           reducedFeedbackCardsTrigger.kill();
-          reducedFeedbackCopyTrigger.kill();
         };
       });
 
@@ -676,6 +766,7 @@ export default function Hero() {
       className="relative h-[1100svh] bg-brand-black lg:h-[1200svh]"
     >
       <span id="resultados" className="pointer-events-none absolute top-[22%]" aria-hidden="true" />
+      <span id="sobre" className="pointer-events-none absolute top-[85%]" aria-hidden="true" />
       <span id="depoimentos" className="pointer-events-none absolute top-[92%]" aria-hidden="true" />
       <div className="sticky top-0 flex min-h-[100svh] items-center overflow-hidden pb-16 pt-28 lg:pb-20 lg:pt-32">
       <div ref={logoRef} className="hero-logo-backdrop pointer-events-none absolute inset-0 z-[1]" aria-hidden="true">
@@ -869,9 +960,9 @@ export default function Hero() {
                   gap={10}
                   radius={0}
                   defaultIndex={0}
-                  expandRatio={0.2}
-                  tilt={0}
-                  parallax={0}
+                  expandRatio={0.52}
+                  tilt={8}
+                  parallax={0.5}
                   accentColor="#ffffff"
                   overlayColor="#070707"
                   textColor="#ffffff"
@@ -883,27 +974,108 @@ export default function Hero() {
           <div className="h-full w-screen shrink-0 overflow-hidden bg-brand-black">
             <div className="relative h-full w-full overflow-hidden">
               <div ref={testimonialsIntroRef} className="absolute inset-0 z-20 flex items-center px-5 sm:px-8 lg:px-12">
-                <div className="mx-auto grid w-full max-w-[1440px] gap-10 border-b border-white/15 pb-10 lg:grid-cols-[0.52fr_1.48fr] lg:items-end lg:pb-14">
-                  <div data-intro-copy>
-                    <span className="section-kicker text-brand-red">Vivido por quem treina</span>
-                    <p className="mt-5 max-w-sm text-sm leading-6 text-white/55">
-                      A rotina mostra o processo. Os atletas contam o que mudou.
-                    </p>
+                <div className="about-rafael-panel relative mx-auto w-full max-w-[1440px]">
+                  <div className="pointer-events-none absolute -right-[8%] top-1/2 -translate-y-1/2 font-heading text-[clamp(8rem,20vw,20rem)] font-black uppercase leading-none tracking-[-0.09em] text-white/[0.012]" aria-hidden="true">
+                    Rafael
                   </div>
-                  <MaskedHeading
-                    lines={[
-                      { text: "Evolução real", className: "text-white" },
-                      { text: "De dentro para", className: "masked-heading-fill" },
-                      { text: "Fora", className: "masked-heading-fill" },
-                    ]}
-                    className="font-heading text-[clamp(3rem,6.9vw,7.4rem)] font-black uppercase leading-[0.82] tracking-[-0.065em]"
-                  />
+                  <div data-intro-detail className="relative flex items-center justify-between gap-5 border-b border-white/14 pb-3 sm:pb-4">
+                    <div className="flex items-center gap-3">
+                      <span className="h-px w-8 bg-brand-red sm:w-12" />
+                      <span className="text-[0.58rem] font-black uppercase tracking-[0.3em] text-brand-red">Sobre mim</span>
+                    </div>
+                    <span className="text-[0.54rem] font-bold uppercase tracking-[0.22em] text-white/32">01 · Rafael Melo</span>
+                  </div>
+
+                  <div className="relative mt-5 grid items-center gap-6 sm:mt-7 lg:grid-cols-[0.72fr_1.28fr] lg:gap-14 xl:gap-20">
+                    <div className="flex items-center justify-center lg:justify-start">
+                      <figure
+                        data-intro-copy
+                        className="huddle-photo-frame relative aspect-[16/9] w-full max-w-[24rem] sm:aspect-[1170/1548] sm:w-72 lg:w-full lg:max-w-[23rem] xl:max-w-[25rem]"
+                      >
+                        <div className="huddle-flip-card absolute inset-0">
+                          <div className="huddle-flip-face overflow-hidden bg-[#0d0d0d]">
+                            <Image
+                              src="/assets/results-huddle.jpeg"
+                              alt="Rafael Melo orientando uma equipe de basquete durante a partida"
+                              fill
+                              sizes="(min-width: 1280px) 400px, (min-width: 1024px) 368px, (min-width: 640px) 288px, 100vw"
+                              className="object-cover object-[50%_62%] sm:object-center"
+                            />
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/25 via-transparent to-white/[0.04]" aria-hidden="true" />
+                            <div className="huddle-card-glare absolute inset-0" aria-hidden="true" />
+                          </div>
+
+                          <div className="huddle-flip-face huddle-flip-back overflow-hidden bg-brand-black" aria-hidden="true">
+                            <Image
+                              src="/assets/results-huddle.jpeg"
+                              alt=""
+                              fill
+                              sizes="(min-width: 1280px) 400px, (min-width: 1024px) 368px, (min-width: 640px) 288px, 100vw"
+                              className="scale-105 object-cover object-[50%_62%] grayscale sm:object-center"
+                            />
+                            <div className="absolute inset-0 bg-gradient-to-t from-brand-red/90 via-brand-black/35 to-black/15 mix-blend-multiply" />
+                            <div className="huddle-card-glare absolute inset-0" aria-hidden="true" />
+                          </div>
+                        </div>
+                      </figure>
+                    </div>
+
+                    <article className="min-w-0">
+                      <p data-intro-detail className="mb-3 text-[0.56rem] font-bold uppercase tracking-[0.26em] text-white/42 sm:mb-4 sm:text-[0.62rem]">
+                        Preparador físico · Performance esportiva
+                      </p>
+                      <MaskedHeading
+                        lines={[{ text: "Rafael Melo", className: "text-white" }]}
+                        className="font-heading text-[clamp(2.45rem,3.9vw,4.35rem)] font-black uppercase leading-[0.9] tracking-[-0.055em]"
+                      />
+
+                      <p data-intro-detail className="mt-4 max-w-[31ch] font-heading text-[clamp(1.1rem,1.7vw,1.65rem)] font-bold leading-[1.08] tracking-[-0.025em] text-white sm:mt-5">
+                        Preparo atletas para entregar o melhor quando o jogo mais exige.
+                      </p>
+
+                      <div className="mt-5 grid gap-5 sm:mt-6 sm:grid-cols-[1.35fr_0.65fr] sm:gap-8">
+                        <div data-intro-detail className="space-y-3 text-[0.82rem] leading-6 text-white/58 sm:text-[0.92rem] sm:leading-[1.65]">
+                          <p>
+                            Sou preparador físico especializado no desenvolvimento de atletas, com foco em força, condicionamento e desempenho aplicado às demandas reais de cada modalidade.
+                          </p>
+                          <p className="hidden lg:block">
+                            No basquete, acompanho atletas e equipes de perto para transformar cada sessão em evolução física, confiança e preparo para competir em alto nível.
+                          </p>
+                        </div>
+
+                        <blockquote data-intro-detail className="relative border-l border-brand-red/75 pl-4 sm:pl-5">
+                          <p className="font-heading text-[0.92rem] font-black uppercase leading-[1.08] tracking-[-0.02em] text-white sm:text-base">
+                            Não é treinar mais. É treinar melhor.
+                          </p>
+                          <footer className="mt-3 text-[0.5rem] font-bold uppercase leading-4 tracking-[0.18em] text-white/34">
+                            Propósito, direção e consistência.
+                          </footer>
+                        </blockquote>
+                      </div>
+
+                      <div data-about-line className="mt-5 h-px w-full bg-white/14 sm:mt-6" />
+                      <div className="grid grid-cols-3">
+                        {[
+                          ["01", "Força"],
+                          ["02", "Condicionamento"],
+                          ["03", "Performance"],
+                        ].map(([number, label]) => (
+                          <div key={number} data-about-pillar className="border-r border-white/10 py-3 pr-2 last:border-r-0 sm:py-4">
+                            <span className="block text-[0.48rem] font-bold tracking-[0.2em] text-brand-red">{number}</span>
+                            <span className="mt-1 block font-heading text-[0.7rem] font-black uppercase tracking-[0.02em] text-white/78 sm:text-sm">{label}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </article>
+                  </div>
                 </div>
               </div>
 
               <div ref={trainingSceneRef} className="absolute inset-0 z-10 flex items-center overflow-hidden px-5 py-8 sm:px-8 lg:px-12 lg:py-10">
-                <div className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 font-heading text-[18vw] font-black uppercase leading-none tracking-[-0.08em] text-white/[0.018]" aria-hidden="true">
-                  Evolução
+                <div data-training-backdrop className="training-backdrop-surface pointer-events-none invisible absolute inset-0 opacity-0" aria-hidden="true">
+                  <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 font-heading text-[18vw] font-black uppercase leading-none tracking-[-0.08em] text-white/[0.022]">
+                    Evolução
+                  </div>
                 </div>
                 <div className="relative z-10 mx-auto w-full max-w-[1380px]">
                   <TrainingShowcase />

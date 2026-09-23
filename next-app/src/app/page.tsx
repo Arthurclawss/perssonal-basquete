@@ -1,7 +1,6 @@
 import Header from "@/components/Header";
 import Hero from "@/components/Hero";
 import Programs from "@/components/Programs";
-import About from "@/components/About";
 import FinalCTA from "@/components/FinalCTA";
 import Footer from "@/components/Footer";
 
@@ -11,7 +10,6 @@ export default function Home() {
       <Header />
       <Hero />
       <Programs />
-      <About />
       <FinalCTA />
       <Footer />
     </main>

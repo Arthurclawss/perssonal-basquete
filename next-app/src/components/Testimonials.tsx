@@ -22,9 +22,24 @@ const feedbacks = [
 
 export default function Testimonials() {
   return (
-    <>
-      <div className="absolute inset-0 z-10 flex items-center overflow-hidden px-5 py-8 sm:px-8 lg:px-12 lg:py-10">
-        <div data-feedback-grid className="mx-auto grid w-full max-w-[1120px] grid-cols-2 items-center gap-3 sm:gap-6 lg:grid-cols-12 lg:gap-8">
+    <div className="absolute inset-0 z-20 flex items-center overflow-hidden px-5 py-8 sm:px-8 lg:px-12 lg:py-10">
+      <div className="mx-auto grid w-full max-w-[1440px] items-center gap-6 lg:grid-cols-[0.68fr_1.32fr] lg:gap-10 xl:gap-14">
+        <div className="relative z-20 max-w-[34rem]">
+          <div data-feedback-copy>
+            <Quote className="h-9 w-9 text-brand-red sm:h-12 sm:w-12" strokeWidth={1.4} />
+          </div>
+          <h2
+            data-feedback-copy
+            className="mt-4 font-heading text-[clamp(2.15rem,3.65vw,4.45rem)] font-black uppercase leading-[0.88] tracking-[-0.055em] text-white sm:mt-6"
+          >
+            Quando o atleta sente a diferença, o resultado deixa de ser promessa
+          </h2>
+          <p data-feedback-copy className="mt-4 max-w-md text-xs leading-5 text-white/50 sm:mt-5 sm:text-sm sm:leading-6">
+            Feedbacks recebidos durante o processo de preparação e desenvolvimento esportivo.
+          </p>
+        </div>
+
+        <div data-feedback-grid className="relative z-10 grid w-full grid-cols-2 items-center gap-3 sm:gap-5 lg:grid-cols-12 lg:gap-6">
           {feedbacks.map((feedback) => (
             <div key={feedback.src} data-feedback-card className={feedback.wrapperClassName}>
               <figure
@@ -61,25 +76,6 @@ export default function Testimonials() {
           ))}
         </div>
       </div>
-
-      <div className="absolute inset-0 z-20 flex items-center overflow-hidden px-5 py-10 sm:px-8 lg:px-12">
-        <div className="mx-auto w-full max-w-[1440px]">
-          <div className="max-w-[39rem]">
-            <div data-feedback-copy>
-              <Quote className="h-11 w-11 text-brand-red sm:h-14 sm:w-14" strokeWidth={1.4} />
-            </div>
-            <h2
-              data-feedback-copy
-              className="mt-7 font-heading text-[clamp(2.55rem,5vw,5.4rem)] font-black uppercase leading-[0.88] tracking-[-0.055em] text-white"
-            >
-              Quando o atleta sente a diferença, o resultado deixa de ser promessa
-            </h2>
-            <p data-feedback-copy className="mt-6 max-w-md text-sm leading-6 text-white/50 sm:text-base sm:leading-7">
-              Feedbacks recebidos durante o processo de preparação e desenvolvimento esportivo.
-            </p>
-          </div>
-        </div>
-      </div>
-    </>
+    </div>
   );
 }
