@@ -997,20 +997,6 @@ export default function Hero() {
 
           <div className="about-red-stage relative h-full w-screen shrink-0 overflow-hidden">
             <div className="relative h-full w-full overflow-hidden">
-              <div className="about-red-atmosphere pointer-events-none absolute inset-0 z-0" aria-hidden="true">
-                <span className="about-red-atmosphere__beam" />
-                <span className="about-red-atmosphere__halo" />
-                <span className="about-red-atmosphere__court" />
-                <span className="about-red-atmosphere__grain" />
-                <span className="about-red-atmosphere__ball">
-                  <span className="about-red-atmosphere__ball-core" />
-                </span>
-                <span className="about-red-atmosphere__brand">
-                  <span>Hoop</span>
-                  <span>Master</span>
-                </span>
-                <span className="about-red-atmosphere__signature">RM / Performance Basketball / 01</span>
-              </div>
 
               <div ref={testimonialsIntroRef} className="absolute inset-0 z-20 flex items-center px-5 sm:px-8 lg:px-12">
                 <div className="about-rafael-panel relative mx-auto w-full max-w-[1440px]">
