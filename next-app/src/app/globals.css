@@ -10,8 +10,8 @@
   --color-brand-light: #d8d8d5;
   --color-brand-white: #ffffff;
   --color-brand-cream: #f1f0eb;
-  --color-brand-red: #f20d2f;
-  --color-brand-redDark: #c80826;
+  --color-brand-red: #ff1a1a;
+  --color-brand-redDark: #cc0000;
 }
 
 @layer base {
@@ -62,7 +62,7 @@
     brightness(1.14)
     saturate(1.34)
     contrast(1.2)
-    drop-shadow(-14px 5px 36px rgba(242, 13, 47, 0.42))
+    drop-shadow(-14px 5px 36px rgba(255, 26, 26, 0.42))
     drop-shadow(16px -3px 32px rgba(235, 240, 247, 0.2));
 }
 
@@ -78,9 +78,9 @@
   aspect-ratio: 1;
   border-radius: 50%;
   background:
-    radial-gradient(circle at 37% 48%, rgba(242, 13, 47, 0.38), transparent 34%),
+    radial-gradient(circle at 37% 48%, rgba(255, 26, 26, 0.38), transparent 34%),
     radial-gradient(circle at 63% 42%, rgba(226, 232, 240, 0.22), transparent 31%),
-    radial-gradient(circle, rgba(242, 13, 47, 0.12), transparent 66%);
+    radial-gradient(circle, rgba(255, 26, 26, 0.12), transparent 66%);
   filter: blur(38px);
   will-change: transform;
 }
@@ -433,7 +433,7 @@
 
 .masked-heading-fill .masked-heading-controlled__word {
   color: transparent;
-  background: linear-gradient(100deg, #f20d2f 8%, #ff2948 38%, #ffffff 50%, #ff2948 62%, #f20d2f 92%);
+  background: linear-gradient(100deg, #ff1a1a 8%, #ff3d3d 38%, #ffffff 50%, #ff3d3d 62%, #ff1a1a 92%);
   background-size: 240% 100%;
   background-position: 100% 50%;
   background-clip: text;
@@ -698,5 +698,342 @@
   .hero-logo-light-core {
     width: 105vw;
     filter: blur(30px);
+  }
+}
+
+/* Sobre Mim / Hoop Master atmosphere */
+.about-red-stage {
+  isolation: isolate;
+  background:
+    radial-gradient(ellipse at 15% 18%, rgba(255, 26, 26, 0.24) 0%, rgba(120, 0, 0, 0.08) 34%, transparent 60%),
+    radial-gradient(ellipse at 74% 16%, rgba(255, 255, 255, 0.055) 0%, transparent 36%),
+    radial-gradient(ellipse at 84% 74%, rgba(130, 0, 0, 0.18) 0%, transparent 48%),
+    linear-gradient(138deg, #150303 0%, #080101 48%, #000000 100%);
+}
+
+.about-red-stage::after {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(180deg, rgba(0, 0, 0, 0.38), transparent 23%, transparent 72%, rgba(0, 0, 0, 0.72)),
+    radial-gradient(ellipse at center, transparent 34%, rgba(0, 0, 0, 0.56) 100%);
+}
+
+.about-red-atmosphere {
+  overflow: hidden;
+}
+
+.about-red-atmosphere__beam,
+.about-red-atmosphere__halo,
+.about-red-atmosphere__court,
+.about-red-atmosphere__grain {
+  position: absolute;
+  display: block;
+}
+
+.about-red-atmosphere__beam {
+  top: -34%;
+  right: 5%;
+  width: min(52rem, 62vw);
+  height: 112%;
+  opacity: 0.28;
+  filter: blur(24px);
+  transform: translate3d(-4%, -2%, 0) rotate(-17deg) scale(0.97);
+  transform-origin: 50% 30%;
+  background: linear-gradient(90deg, transparent 12%, rgba(255, 26, 26, 0.17) 49%, transparent 78%);
+  clip-path: polygon(39% 0, 58% 0, 92% 100%, 0 100%);
+  animation: about-red-beam-drift 18s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite alternate;
+  will-change: transform, opacity;
+}
+
+.about-red-atmosphere__halo {
+  top: 13%;
+  left: -9%;
+  width: min(44rem, 64vw);
+  aspect-ratio: 1;
+  border: 1px solid rgba(255, 26, 26, 0.11);
+  border-radius: 999px;
+  opacity: 0.72;
+  filter: blur(0.2px);
+  transform: translate3d(-5%, 2%, 0) scale(0.96);
+  transform-origin: 50% 50%;
+  box-shadow:
+    0 0 90px rgba(255, 26, 26, 0.1),
+    inset 0 0 80px rgba(255, 26, 26, 0.045);
+  animation: about-red-halo-drift 24s ease-in-out infinite alternate;
+  will-change: transform, opacity;
+}
+
+.about-red-atmosphere__court {
+  right: -14%;
+  bottom: -47%;
+  left: -14%;
+  height: 82%;
+  opacity: 0.34;
+  transform: translate3d(0, 3%, 0) perspective(760px) rotateX(63deg) scale(0.98);
+  transform-origin: 50% 100%;
+  background:
+    linear-gradient(90deg, transparent 49.9%, rgba(255, 255, 255, 0.13) 50%, transparent 50.1%),
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.042) 0 1px, transparent 1px 12.5%),
+    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.035) 0 1px, transparent 1px 18%);
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, rgba(0, 0, 0, 0.9) 45%, #000 100%);
+  mask-image: linear-gradient(to bottom, transparent 0%, rgba(0, 0, 0, 0.9) 45%, #000 100%);
+  animation: about-red-court-drift 28s ease-in-out infinite alternate;
+  will-change: transform;
+}
+
+.about-red-atmosphere__grain {
+  inset: 0;
+  opacity: 0.15;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.15) 0.55px, transparent 0.75px);
+  background-size: 5px 5px;
+  background-position: 0 0;
+  mix-blend-mode: soft-light;
+  animation: about-red-grain-drift 14s linear infinite;
+  will-change: background-position;
+}
+
+.about-red-atmosphere__ball {
+  position: absolute;
+  top: 38%;
+  left: 48%;
+  width: clamp(4.4rem, 7vw, 7.2rem);
+  aspect-ratio: 1;
+  opacity: 0.42;
+  filter: drop-shadow(0 24px 34px rgba(0, 0, 0, 0.55)) drop-shadow(0 0 24px rgba(255, 26, 26, 0.2));
+  animation: about-basketball-flight 18s cubic-bezier(0.38, 0.02, 0.58, 1) infinite;
+  will-change: transform, opacity;
+}
+
+.about-red-atmosphere__ball-core {
+  position: absolute;
+  inset: 0;
+  display: block;
+  overflow: hidden;
+  border: 1px solid rgba(255, 132, 149, 0.22);
+  border-radius: 50%;
+  background: radial-gradient(circle at 31% 25%, rgba(255, 175, 185, 0.92) 0%, rgba(255, 69, 98, 0.8) 14%, rgba(188, 13, 44, 0.82) 43%, rgba(68, 5, 18, 0.94) 76%, #170105 100%);
+  box-shadow:
+    inset -18px -20px 28px rgba(0, 0, 0, 0.58),
+    inset 8px 8px 18px rgba(255, 255, 255, 0.08);
+  animation: about-basketball-spin 7s linear infinite;
+}
+
+.about-red-atmosphere__ball-core::before,
+.about-red-atmosphere__ball-core::after {
+  content: "";
+  position: absolute;
+  border-color: rgba(10, 1, 3, 0.82);
+  pointer-events: none;
+}
+
+.about-red-atmosphere__ball-core::before {
+  inset: -8% 27%;
+  border-right: 2px solid;
+  border-left: 2px solid;
+  border-radius: 50%;
+  transform: rotate(22deg);
+}
+
+.about-red-atmosphere__ball-core::after {
+  top: 42%;
+  right: -12%;
+  left: -12%;
+  height: 34%;
+  border-top: 2px solid;
+  border-radius: 50%;
+  transform: rotate(-9deg);
+}
+
+.about-red-atmosphere__brand {
+  position: absolute;
+  right: 3.5%;
+  bottom: 4%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  color: rgba(0, 0, 0, 0.28);
+  font-family: var(--font-heading), sans-serif;
+  font-size: clamp(4.5rem, 9.8vw, 10.5rem);
+  font-weight: 900;
+  line-height: 0.72;
+  letter-spacing: -0.075em;
+  text-transform: uppercase;
+  -webkit-text-stroke: 1px rgba(255, 255, 255, 0.055);
+  opacity: 0.86;
+  text-shadow: 0 0 48px rgba(0, 0, 0, 0.3);
+  animation: about-brand-breathe 12s ease-in-out infinite alternate;
+  will-change: transform, opacity;
+}
+
+.about-red-atmosphere__brand span:first-child {
+  -webkit-text-stroke-color: rgba(255, 255, 255, 0.065);
+}
+
+.about-red-atmosphere__brand span:last-child {
+  color: rgba(0, 0, 0, 0.2);
+  -webkit-text-stroke-color: rgba(255, 26, 26, 0.11);
+}
+
+.about-red-atmosphere__rafael {
+  color: transparent;
+  background: linear-gradient(90deg, rgba(0, 0, 0, 0.28), rgba(72, 0, 0, 0.4) 58%, rgba(0, 0, 0, 0.32));
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-stroke: 1px rgba(255, 255, 255, 0.018);
+  opacity: 0.84;
+  text-shadow: 0 0 54px rgba(0, 0, 0, 0.34);
+  animation: about-rafael-breathe 14s ease-in-out infinite alternate;
+  will-change: opacity;
+}
+
+.about-red-atmosphere__signature {
+  position: absolute;
+  top: 5.5%;
+  right: 4%;
+  color: rgba(0, 0, 0, 0.68);
+  font-size: 0.52rem;
+  font-weight: 800;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+}
+
+@keyframes about-red-beam-drift {
+  0% { opacity: 0.22; transform: translate3d(-4%, -2%, 0) rotate(-17deg) scale(0.97); }
+  50% { opacity: 0.34; transform: translate3d(4%, 3%, 0) rotate(-15deg) scale(1.05); }
+  100% { opacity: 0.26; transform: translate3d(-1%, 7%, 0) rotate(-19deg) scale(1.1); }
+}
+
+@keyframes about-red-halo-drift {
+  0% { opacity: 0.58; transform: translate3d(-5%, 2%, 0) scale(0.96); }
+  50% { opacity: 0.78; transform: translate3d(7%, -2%, 0) scale(1.08); }
+  100% { opacity: 0.66; transform: translate3d(-2%, 6%, 0) scale(1.14); }
+}
+
+@keyframes about-red-court-drift {
+  0% { transform: translate3d(0, 3%, 0) perspective(760px) rotateX(63deg) scale(0.98); }
+  50% { transform: translate3d(2%, -5%, 0) perspective(760px) rotateX(62deg) scale(1.04); }
+  100% { transform: translate3d(-2%, -10%, 0) perspective(760px) rotateX(64deg) scale(1.07); }
+}
+
+@keyframes about-red-grain-drift {
+  to { background-position: 54px 34px; }
+}
+
+@keyframes about-basketball-flight {
+  0%, 4% { opacity: 0; transform: translate3d(-48vw, 26vh, 0) scale(0.58); }
+  12% { opacity: 0.32; }
+  43% { opacity: 0.48; transform: translate3d(-14vw, -28vh, 0) scale(0.92); }
+  63% { opacity: 0.5; transform: translate3d(9vw, -31vh, 0) scale(1); }
+  88% { opacity: 0.32; }
+  96%, 100% { opacity: 0; transform: translate3d(48vw, 22vh, 0) scale(0.64); }
+}
+
+@keyframes about-basketball-spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes about-brand-breathe {
+  0% { opacity: 0.72; transform: translate3d(0, 0, 0); }
+  100% { opacity: 1; transform: translate3d(-1.2rem, -0.65rem, 0); }
+}
+
+@keyframes about-rafael-breathe {
+  0% { opacity: 0.72; }
+  100% { opacity: 1; }
+}
+
+.about-rafael-panel::after {
+  content: none;
+}
+
+.training-backdrop-surface {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.014), transparent 24%, transparent 76%, rgba(255, 255, 255, 0.01)),
+    radial-gradient(circle at 50% 48%, rgba(48, 3, 12, 0.28) 0%, rgba(4, 4, 4, 0.12) 68%);
+}
+
+.huddle-photo-frame {
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow:
+    0 30px 74px rgba(0, 0, 0, 0.58),
+    -12px 18px 48px rgba(255, 26, 26, 0.14),
+    inset 0 0 0 1px rgba(255, 26, 26, 0.13);
+}
+
+.huddle-photo-media {
+  border-radius: inherit;
+}
+
+.about-profile-image {
+  filter: saturate(1.04) contrast(1.06) brightness(0.92);
+}
+
+.about-performance-marker {
+  box-shadow: 0 0 0 3px rgba(255, 26, 26, 0.12), 0 0 18px rgba(255, 26, 26, 0.28);
+}
+
+.huddle-photo-frame::before {
+  border-right-color: rgba(255, 26, 26, 0.62);
+  border-bottom-color: rgba(255, 26, 26, 0.62);
+  box-shadow: inset -1px -1px 0 rgba(255, 26, 26, 0.14);
+}
+
+.huddle-photo-frame::after {
+  top: 4.25rem;
+  width: 2px;
+  height: 3.75rem;
+  background: linear-gradient(to bottom, #ff1a1a 0 58%, rgba(255, 255, 255, 0.32) 58% 76%, transparent 76%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .about-red-atmosphere__beam,
+  .about-red-atmosphere__halo,
+  .about-red-atmosphere__court,
+  .about-red-atmosphere__grain,
+  .about-red-atmosphere__ball,
+  .about-red-atmosphere__ball-core,
+  .about-red-atmosphere__brand,
+  .about-red-atmosphere__rafael {
+    animation: none;
+  }
+}
+
+@media (max-width: 639px) {
+  .about-red-atmosphere__beam {
+    right: -34%;
+    width: 100vw;
+    opacity: 0.22;
+  }
+
+  .about-red-atmosphere__halo {
+    top: 22%;
+    left: -42%;
+    width: 92vw;
+  }
+
+  .about-red-atmosphere__court {
+    bottom: -40%;
+    height: 66%;
+    opacity: 0.24;
+  }
+
+  .about-red-atmosphere__ball {
+    top: 34%;
+    width: 4.2rem;
+  }
+
+  .about-red-atmosphere__brand {
+    right: 1.5rem;
+    bottom: 8%;
+    font-size: clamp(3.8rem, 17vw, 6rem);
+    opacity: 0.78;
+  }
+
+  .about-red-atmosphere__signature {
+    display: none;
   }
 }

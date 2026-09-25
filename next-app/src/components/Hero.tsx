@@ -16,6 +16,7 @@ import SpotlightCard from "./SpotlightCard";
 import Testimonials from "./Testimonials";
 import TrainingShowcase from "./TrainingShowcase";
 import VariableProximity from "./VariableProximity";
+import TiltCard from "./TiltCard";
 
 const instagramUrl = "https://www.instagram.com/coachrafaelmelo/";
 
@@ -207,6 +208,12 @@ export default function Hero() {
           filter: "blur(10px)",
           force3D: true,
         });
+        gsap.set(testimonialsIntroRef.current?.querySelectorAll("[data-fold-piece]") ?? [], {
+          opacity: 0,
+          rotateX: -92,
+          transformOrigin: "50% 0%",
+          "--fold-crease": 0.62,
+        });
         gsap.set(testimonialsIntroRef.current?.querySelectorAll("[data-about-line]") ?? [], {
           scaleX: 0,
           transformOrigin: "0% 50%",
@@ -219,7 +226,7 @@ export default function Hero() {
         });
         gsap.set(trainingCards, {
           autoAlpha: 0,
-          yPercent: (index) => [52, 68, 58][index] ?? 58,
+          yPercent: (index) => [72, 88, 78][index] ?? 78,
           force3D: true,
         });
         gsap.set(trainingBackdrop, {
@@ -433,6 +440,18 @@ export default function Hero() {
             "introReveal+=0.2",
           )
           .to(
+            testimonialsIntroRef.current?.querySelectorAll("[data-fold-piece]") ?? [],
+            {
+              opacity: 1,
+              rotateX: 0,
+              "--fold-crease": 0,
+              duration: 1.1,
+              stagger: { amount: 1.8 },
+              ease: "power2.out",
+            },
+            "introReveal+=0.15",
+          )
+          .to(
             testimonialsIntroRef.current?.querySelectorAll("[data-about-line]") ?? [],
             {
               scaleX: 1,
@@ -495,9 +514,9 @@ export default function Hero() {
             trainingCards,
             {
               yPercent: 0,
-              duration: 2.6,
-              stagger: 0.32,
-              ease: "none",
+              duration: 2.35,
+              stagger: 0.16,
+              ease: "power2.out",
               force3D: true,
             },
             "videoSequence",
@@ -506,8 +525,8 @@ export default function Hero() {
             trainingCards,
             {
               autoAlpha: 1,
-              duration: 0.72,
-              stagger: 0.24,
+              duration: 0.85,
+              stagger: 0.12,
               ease: "power2.out",
             },
             "videoSequence",
@@ -637,6 +656,11 @@ export default function Hero() {
           autoAlpha: 1,
           filter: "blur(0px)",
           clearProps: "transform",
+        });
+        gsap.set(testimonialsIntroRef.current?.querySelectorAll("[data-fold-piece]") ?? [], {
+          opacity: 1,
+          rotateX: 0,
+          "--fold-crease": 0,
         });
         gsap.set(testimonialsIntroRef.current?.querySelectorAll("[data-about-line]") ?? [], {
           scaleX: 1,
@@ -915,7 +939,7 @@ export default function Hero() {
 
       <div
         ref={transitionLineRef}
-        className="invisible absolute left-0 top-1/2 z-[35] h-[2px] w-full origin-center bg-brand-red opacity-0 shadow-[0_0_28px_rgba(242,13,47,0.8)]"
+        className="invisible absolute left-0 top-1/2 z-[35] h-[2px] w-full origin-center bg-brand-red opacity-0 shadow-[0_0_28px_rgba(255,26,26,0.82)]"
         aria-hidden="true"
       />
 
@@ -971,101 +995,91 @@ export default function Hero() {
             </div>
           </div>
 
-          <div className="h-full w-screen shrink-0 overflow-hidden bg-brand-black">
+          <div className="about-red-stage relative h-full w-screen shrink-0 overflow-hidden">
             <div className="relative h-full w-full overflow-hidden">
+              <div className="about-red-atmosphere pointer-events-none absolute inset-0 z-0" aria-hidden="true">
+                <span className="about-red-atmosphere__beam" />
+                <span className="about-red-atmosphere__halo" />
+                <span className="about-red-atmosphere__court" />
+                <span className="about-red-atmosphere__grain" />
+                <span className="about-red-atmosphere__ball">
+                  <span className="about-red-atmosphere__ball-core" />
+                </span>
+                <span className="about-red-atmosphere__brand">
+                  <span>Hoop</span>
+                  <span>Master</span>
+                </span>
+                <span className="about-red-atmosphere__signature">RM / Performance Basketball / 01</span>
+              </div>
+
               <div ref={testimonialsIntroRef} className="absolute inset-0 z-20 flex items-center px-5 sm:px-8 lg:px-12">
                 <div className="about-rafael-panel relative mx-auto w-full max-w-[1440px]">
-                  <div className="pointer-events-none absolute -right-[8%] top-1/2 -translate-y-1/2 font-heading text-[clamp(8rem,20vw,20rem)] font-black uppercase leading-none tracking-[-0.09em] text-white/[0.012]" aria-hidden="true">
+                  <div className="about-red-atmosphere__rafael pointer-events-none absolute -right-[8%] top-1/2 -translate-y-1/2 font-heading text-[clamp(8rem,20vw,20rem)] font-black uppercase leading-none tracking-[-0.09em]" aria-hidden="true">
                     Rafael
                   </div>
-                  <div data-intro-detail className="relative flex items-center justify-between gap-5 border-b border-white/14 pb-3 sm:pb-4">
-                    <div className="flex items-center gap-3">
-                      <span className="h-px w-8 bg-brand-red sm:w-12" />
-                      <span className="text-[0.58rem] font-black uppercase tracking-[0.3em] text-brand-red">Sobre mim</span>
+                  <div data-intro-detail className="relative pb-3 sm:pb-4">
+                    <div className="inline-flex bg-brand-red px-3 py-1.5">
+                      <span className="text-[0.6rem] font-black uppercase tracking-[0.25em] text-black">Sobre mim</span>
                     </div>
-                    <span className="text-[0.54rem] font-bold uppercase tracking-[0.22em] text-white/32">01 · Rafael Melo</span>
                   </div>
 
                   <div className="relative mt-5 grid items-center gap-6 sm:mt-7 lg:grid-cols-[0.72fr_1.28fr] lg:gap-14 xl:gap-20">
-                    <div className="flex items-center justify-center lg:justify-start">
-                      <figure
-                        data-intro-copy
-                        className="huddle-photo-frame relative aspect-[16/9] w-full max-w-[24rem] sm:aspect-[1170/1548] sm:w-72 lg:w-full lg:max-w-[23rem] xl:max-w-[25rem]"
-                      >
-                        <div className="huddle-flip-card absolute inset-0">
-                          <div className="huddle-flip-face overflow-hidden bg-[#0d0d0d]">
+                    <div className="flex items-center justify-center lg:justify-start lg:translate-y-8">
+                      <TiltCard className="huddle-photo-frame relative w-full max-w-[24rem] sm:w-72 lg:w-full lg:max-w-[23rem] xl:max-w-[25rem]">
+                        <figure
+                          data-intro-copy
+                          className="huddle-photo-media relative aspect-[16/9] w-full overflow-hidden sm:aspect-[1170/1548]"
+                        >
+                          <div className="absolute inset-0 h-full w-full bg-[#0d0d0d]">
                             <Image
                               src="/assets/results-huddle.jpeg"
                               alt="Rafael Melo orientando uma equipe de basquete durante a partida"
                               fill
                               sizes="(min-width: 1280px) 400px, (min-width: 1024px) 368px, (min-width: 640px) 288px, 100vw"
-                              className="object-cover object-[50%_62%] sm:object-center"
+                              className="about-profile-image pointer-events-none object-cover object-[50%_62%] sm:object-center"
                             />
                             <div className="absolute inset-0 bg-gradient-to-t from-black/25 via-transparent to-white/[0.04]" aria-hidden="true" />
                             <div className="huddle-card-glare absolute inset-0" aria-hidden="true" />
                           </div>
-
-                          <div className="huddle-flip-face huddle-flip-back overflow-hidden bg-brand-black" aria-hidden="true">
-                            <Image
-                              src="/assets/results-huddle.jpeg"
-                              alt=""
-                              fill
-                              sizes="(min-width: 1280px) 400px, (min-width: 1024px) 368px, (min-width: 640px) 288px, 100vw"
-                              className="scale-105 object-cover object-[50%_62%] grayscale sm:object-center"
-                            />
-                            <div className="absolute inset-0 bg-gradient-to-t from-brand-red/90 via-brand-black/35 to-black/15 mix-blend-multiply" />
-                            <div className="huddle-card-glare absolute inset-0" aria-hidden="true" />
-                          </div>
-                        </div>
-                      </figure>
+                        </figure>
+                      </TiltCard>
                     </div>
 
                     <article className="min-w-0">
-                      <p data-intro-detail className="mb-3 text-[0.56rem] font-bold uppercase tracking-[0.26em] text-white/42 sm:mb-4 sm:text-[0.62rem]">
-                        Preparador físico · Performance esportiva
-                      </p>
+                      <div data-intro-detail className="mb-3 inline-flex bg-white px-3 py-1.5 text-[0.56rem] font-black uppercase tracking-[0.26em] text-black sm:mb-4 sm:text-[0.62rem]">
+                        <FoldText lines={["Preparador físico · Performance esportiva"]} className="[&_.fold-text-line]:inline" />
+                      </div>
                       <MaskedHeading
                         lines={[{ text: "Rafael Melo", className: "text-white" }]}
                         className="font-heading text-[clamp(2.45rem,3.9vw,4.35rem)] font-black uppercase leading-[0.9] tracking-[-0.055em]"
                       />
 
-                      <p data-intro-detail className="mt-4 max-w-[31ch] font-heading text-[clamp(1.1rem,1.7vw,1.65rem)] font-bold leading-[1.08] tracking-[-0.025em] text-white sm:mt-5">
-                        Preparo atletas para entregar o melhor quando o jogo mais exige.
-                      </p>
+                      <div className="mt-4 max-w-[31ch] font-heading text-[clamp(1.1rem,1.7vw,1.65rem)] font-bold leading-[1.08] tracking-[-0.025em] text-white sm:mt-5">
+                        <FoldText lines={["Preparo atletas para", "entregar o melhor", "quando o jogo", "mais exige."]} />
+                      </div>
 
-                      <div className="mt-5 grid gap-5 sm:mt-6 sm:grid-cols-[1.35fr_0.65fr] sm:gap-8">
-                        <div data-intro-detail className="space-y-3 text-[0.82rem] leading-6 text-white/58 sm:text-[0.92rem] sm:leading-[1.65]">
+                      <div className="mt-5 max-w-[52rem] sm:mt-6">
+                        <div data-intro-detail className="space-y-3 text-[0.95rem] leading-relaxed text-white sm:text-[1.1rem] sm:leading-[1.7]">
                           <p>
-                            Sou preparador físico especializado no desenvolvimento de atletas, com foco em força, condicionamento e desempenho aplicado às demandas reais de cada modalidade.
-                          </p>
-                          <p className="hidden lg:block">
-                            No basquete, acompanho atletas e equipes de perto para transformar cada sessão em evolução física, confiança e preparo para competir em alto nível.
+                            <FoldText lines={["Esqueça os treinos genéricos de academia. O basquete exige um corpo que suporte contato, saltos repetidos e mudanças bruscas de direção. Meu trabalho aqui é construir a sua base atlética para você jogar mais duro, cansar menos e passar a temporada inteira sem se machucar."]} className="[&_.fold-text-line]:inline" />
                           </p>
                         </div>
-
-                        <blockquote data-intro-detail className="relative border-l border-brand-red/75 pl-4 sm:pl-5">
-                          <p className="font-heading text-[0.92rem] font-black uppercase leading-[1.08] tracking-[-0.02em] text-white sm:text-base">
-                            Não é treinar mais. É treinar melhor.
-                          </p>
-                          <footer className="mt-3 text-[0.5rem] font-bold uppercase leading-4 tracking-[0.18em] text-white/34">
-                            Propósito, direção e consistência.
-                          </footer>
-                        </blockquote>
                       </div>
 
-                      <div data-about-line className="mt-5 h-px w-full bg-white/14 sm:mt-6" />
-                      <div className="grid grid-cols-3">
+                      <ul className="mt-8 flex flex-col gap-3 sm:mt-10">
                         {[
-                          ["01", "Força"],
-                          ["02", "Condicionamento"],
-                          ["03", "Performance"],
-                        ].map(([number, label]) => (
-                          <div key={number} data-about-pillar className="border-r border-white/10 py-3 pr-2 last:border-r-0 sm:py-4">
-                            <span className="block text-[0.48rem] font-bold tracking-[0.2em] text-brand-red">{number}</span>
-                            <span className="mt-1 block font-heading text-[0.7rem] font-black uppercase tracking-[0.02em] text-white/78 sm:text-sm">{label}</span>
-                          </div>
+                          "Potência e Explosão",
+                          "Resistência de Jogo",
+                          "Prevenção de Lesões"
+                        ].map((label, i) => (
+                          <li key={i} data-about-pillar className="flex items-center gap-3">
+                            <span className="about-performance-marker h-2 w-2 shrink-0 rounded-none bg-brand-red" />
+                            <span className="font-heading text-[0.85rem] font-black uppercase tracking-[0.04em] text-white sm:text-base">
+                              <FoldText lines={[label]} className="[&_.fold-text-line]:inline" />
+                            </span>
+                          </li>
                         ))}
-                      </div>
+                      </ul>
                     </article>
                   </div>
                 </div>

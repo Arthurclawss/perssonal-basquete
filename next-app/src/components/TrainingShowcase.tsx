@@ -2,21 +2,21 @@ import TrainingVideo from "./TrainingVideo";
 
 const videos = [
   {
-    src: "/assets/training-03.mp4",
+    src: "/assets/training-03.mp4?v=2",
     poster: "/assets/training-03-poster.png",
     eyebrow: "Resultado real",
     title: "Recorde pessoal e uma base mais forte",
     className: "training-card-featured",
   },
   {
-    src: "/assets/training-01.mp4",
+    src: "/assets/training-01.mp4?v=2",
     poster: "/assets/training-01-poster.png",
     eyebrow: "Agilidade",
     title: "Resposta rápida em cada direção",
     className: "training-card-secondary",
   },
   {
-    src: "/assets/training-02.mp4",
+    src: "/assets/training-02.mp4?v=2",
     poster: "/assets/training-02-poster.png",
     eyebrow: "Preparação física",
     title: "Preparando o atleta para a temporada",
