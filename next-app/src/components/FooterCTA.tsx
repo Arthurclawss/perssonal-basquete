@@ -33,7 +33,7 @@ export default function FooterCTA() {
       gsap.set(words, { autoAlpha: 0, y: 0, yPercent: 115, force3D: true });
       gsap.set([kicker, description, actions, process, footer], { autoAlpha: 0, y: 20, force3D: true });
       gsap.set(glow, { opacity: 0.3, scale: 0.9 });
-      gsap.set(brand, { opacity: 0.04, scale: 0.98 });
+      gsap.set(brand, { opacity: 0.02, scale: 0.98 });
       gsap.set(mesh, { opacity: 0.15 });
       const entry = gsap.timeline({
         defaults: { ease: "power3.out" },
@@ -47,7 +47,7 @@ export default function FooterCTA() {
       entry
         .to(card, { y: 0, scale: 1, duration: 0.9 }, 0)
         .to(glow, { opacity: 1, scale: 1, duration: 1 }, 0)
-        .to(brand, { opacity: 0.12, scale: 1, duration: 1 }, 0)
+        .to(brand, { opacity: 0.035, scale: 1, duration: 1 }, 0)
         .to(mesh, { opacity: 0.6, duration: 1 }, 0)
         .to(kicker, { autoAlpha: 1, y: 0, duration: 0.3 }, 0.12)
         .to(words, { autoAlpha: 1, y: 0, yPercent: 0, duration: 0.45, stagger: { amount: 0.18 } }, 0.2)
@@ -74,7 +74,7 @@ export default function FooterCTA() {
       <div
         data-cta-brand
         aria-hidden="true"
-        className="pointer-events-none absolute inset-x-0 top-1/2 -z-10 mx-auto h-[78svh] w-full max-w-6xl -translate-y-1/2 select-none opacity-[0.12]"
+        className="pointer-events-none absolute inset-x-0 top-1/2 -z-10 mx-auto h-[78svh] w-full max-w-6xl -translate-y-1/2 select-none opacity-[0.035]"
       >
         <Image src="/assets/hoop-master-logo.png" alt="" fill sizes="100vw"
           className="object-contain px-6 sm:px-12" />
@@ -124,12 +124,12 @@ export default function FooterCTA() {
               Tire suas dúvidas pelo WhatsApp.
             </p>
           </div>
-          <p data-cta-process className="mt-6 flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-[0.68rem] leading-5 text-zinc-400 sm:text-xs">
-            <span>Avaliação</span>
-            <span aria-hidden="true" className="text-brand-red">→</span>
-            <span>Plano personalizado</span>
-            <span aria-hidden="true" className="text-brand-red">→</span>
-            <span>Treino acompanhado</span>
+          <p data-cta-process className="mt-6 flex flex-wrap items-center justify-center gap-x-2.5 gap-y-1.5 text-xs font-medium tracking-wide text-zinc-200 sm:text-sm">
+            <span className="text-white/90">Avaliação</span>
+            <span aria-hidden="true" className="font-bold text-brand-red">→</span>
+            <span className="text-white/90">Plano personalizado</span>
+            <span aria-hidden="true" className="font-bold text-brand-red">→</span>
+            <span className="text-white/90">Treino acompanhado</span>
           </p>
         </div>
 
