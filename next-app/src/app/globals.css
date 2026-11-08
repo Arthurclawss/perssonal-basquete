@@ -1595,6 +1595,11 @@
   animation-play-state: paused;
 }
 
+/* Pausa todas as colunas quando o modal de depoimento estiver aberto */
+.feedback-marquee--paused .feedback-marquee__track {
+  animation-play-state: paused !important;
+}
+
 .feedback-marquee__group {
   display: flex;
   flex-direction: column;
