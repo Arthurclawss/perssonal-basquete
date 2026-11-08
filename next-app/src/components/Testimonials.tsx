@@ -1,79 +1,147 @@
 import Image from "next/image";
-import { ArrowUpRight, Quote } from "lucide-react";
+import { Quote } from "lucide-react";
+import CinematicText from "./CinematicText";
 
-const feedbacks = [
+type Feedback = {
+  src: string;
+  alt: string;
+  width: number;
+  height: number;
+};
+
+const feedbacks: Feedback[] = [
   {
-    src: "/assets/testimonial-performance.jpeg",
-    alt: "Feedback de atleta relatando evolução de força, explosão, propriocepção e condicionamento físico, além de passar de cinco para dez repetições na barra fixa",
-    quote: "Mais força, explosão e condicionamento — de 5 para 10 repetições na barra fixa.",
-    wrapperClassName: "lg:col-span-7",
-    figureClassName: "lg:-rotate-1",
-    frameClassName: "h-[46svh] min-h-[18rem] max-h-[30rem]",
+    src: "/assets/testimonial-performance-cutout.png",
+    alt: "Mensagem de WhatsApp relatando evolução de força, explosão, propriocepção e condicionamento físico",
+    width: 788,
+    height: 1049,
   },
   {
-    src: "/assets/testimonial-mobility.jpeg",
-    alt: "Feedback de atleta relatando melhora rápida na mobilidade do joelho, força, velocidade, potência, redução da dor e mais confiança",
-    quote: "Mais mobilidade, velocidade, potência e confiança nos movimentos.",
-    wrapperClassName: "lg:col-span-5",
-    figureClassName: "lg:translate-y-10 lg:rotate-1",
-    frameClassName: "h-[38svh] min-h-[16rem] max-h-[24rem]",
+    src: "/assets/testimonial-mobility-cutout.png",
+    alt: "Mensagens de WhatsApp relatando melhora de mobilidade, força, velocidade, potência e confiança",
+    width: 814,
+    height: 600,
+  },
+  {
+    src: "/assets/testimonial-3-cutout.png",
+    alt: "Feedback recebido no WhatsApp",
+    width: 777,
+    height: 616,
+  },
+  {
+    src: "/assets/testimonial-5-cutout.png",
+    alt: "Feedback recebido no WhatsApp",
+    width: 746,
+    height: 652,
   },
 ];
 
+// Colunas equilibradas: a mais alta (depoimento longo + curto) ao lado de dois curtos.
+const feedbackColumns = [
+  { items: [feedbacks[0], feedbacks[3]], direction: "up" as const, duration: 38 },
+  { items: [feedbacks[2], feedbacks[1]], direction: "down" as const, duration: 44 },
+];
+
+function FeedbackCard({ feedback, hidden = false }: { feedback: Feedback; hidden?: boolean }) {
+  return (
+    <div data-feedback-card className="feedback-marquee__card">
+      <a
+        href={feedback.src}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="pointer-events-auto block w-full cursor-zoom-in"
+        aria-label="Abrir mensagem em tamanho completo"
+        aria-hidden={hidden || undefined}
+        tabIndex={hidden ? -1 : undefined}
+      >
+        <Image
+          src={feedback.src}
+          alt={hidden ? "" : feedback.alt}
+          width={feedback.width}
+          height={feedback.height}
+          sizes="(max-width: 767px) 90vw, 22.5rem"
+          className="h-auto w-full object-contain drop-shadow-2xl"
+        />
+      </a>
+    </div>
+  );
+}
+
+/**
+ * Coluna com rolagem infinita. O conteúdo é duplicado e o trilho anda 50%,
+ * criando um loop sem emenda. Ao passar o mouse, só esta coluna pausa.
+ */
+function MarqueeLane({
+  items,
+  direction,
+  duration,
+  className = "",
+}: {
+  items: Feedback[];
+  direction: "up" | "down";
+  duration: number;
+  className?: string;
+}) {
+  return (
+    <div data-feedback-lane className={`feedback-marquee__lane ${className}`.trim()}>
+      <div
+        className={`feedback-marquee__track feedback-marquee__track--${direction}`}
+        style={{ animationDuration: `${duration}s` }}
+      >
+        {[0, 1].map((copy) => (
+          <div key={copy} className="feedback-marquee__group" aria-hidden={copy === 1 || undefined}>
+            {items.map((feedback) => (
+              <FeedbackCard key={`${copy}-${feedback.src}`} feedback={feedback} hidden={copy === 1} />
+            ))}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export default function Testimonials() {
   return (
-    <div className="absolute inset-0 z-20 flex items-center overflow-hidden px-5 py-8 sm:px-8 lg:px-12 lg:py-10">
-      <div className="mx-auto grid w-full max-w-[1440px] items-center gap-6 lg:grid-cols-[0.68fr_1.32fr] lg:gap-10 xl:gap-14">
-        <div className="relative z-20 max-w-[34rem]">
-          <div data-feedback-copy>
-            <Quote className="h-9 w-9 text-brand-red sm:h-12 sm:w-12" strokeWidth={1.4} />
+    <div data-feedback-stage className="absolute inset-0 z-20 flex items-center overflow-hidden px-5 pb-8 pt-24 sm:px-8 lg:px-10 xl:px-12">
+      <div className="mx-auto grid h-full w-full max-w-[1500px] content-center gap-6 xl:grid-cols-[0.95fr_1.05fr] xl:items-center xl:gap-10 2xl:gap-14">
+        <div className="relative z-20 max-w-[44rem] xl:-translate-y-3">
+          <div data-feedback-copy data-feedback-accent>
+            <Quote className="h-8 w-8 text-brand-red sm:h-10 sm:w-10" strokeWidth={1.4} />
           </div>
           <h2
-            data-feedback-copy
-            className="mt-4 font-heading text-[clamp(2.15rem,3.65vw,4.45rem)] font-black uppercase leading-[0.88] tracking-[-0.055em] text-white sm:mt-6"
+            data-feedback-heading
+            aria-label="Quando o atleta sente a diferença, o resultado deixa de ser promessa"
+            className="mt-3 font-heading text-[clamp(1.85rem,3vw,3.6rem)] font-black uppercase leading-[0.92] tracking-[-0.045em] text-white sm:mt-5"
           >
-            Quando o atleta sente a diferença, o resultado deixa de ser promessa
+            <CinematicText text="Quando o atleta sente a diferença, o resultado deixa de ser promessa" />
           </h2>
-          <p data-feedback-copy className="mt-4 max-w-md text-xs leading-5 text-white/50 sm:mt-5 sm:text-sm sm:leading-6">
+          <p data-feedback-copy data-feedback-subtitle className="mt-4 max-w-lg text-sm leading-6 text-white/55 sm:mt-5 sm:text-base sm:leading-7">
             Feedbacks recebidos durante o processo de preparação e desenvolvimento esportivo.
           </p>
         </div>
 
-        <div data-feedback-grid className="relative z-10 grid w-full grid-cols-2 items-center gap-3 sm:gap-5 lg:grid-cols-12 lg:gap-6">
-          {feedbacks.map((feedback) => (
-            <div key={feedback.src} data-feedback-card className={feedback.wrapperClassName}>
-              <figure
-                className={`testimonial-feedback-card overflow-hidden border border-white/15 bg-[#0d0d0f] p-2 shadow-2xl sm:p-3 ${feedback.figureClassName}`}
-              >
-                <a
-                  href={feedback.src}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={`relative block cursor-zoom-in overflow-hidden bg-black ${feedback.frameClassName}`}
-                  aria-label="Abrir feedback em tamanho completo"
-                >
-                  <Image
-                    src={feedback.src}
-                    alt={feedback.alt}
-                    fill
-                    sizes="(max-width: 1024px) 48vw, 52vw"
-                    className="object-contain"
-                  />
-                </a>
-                <figcaption className="flex items-end justify-between gap-3 border-t border-white/10 px-2 py-3 sm:gap-5 sm:px-5 sm:py-5">
-                  <div>
-                    <span className="text-[0.5rem] font-black uppercase tracking-[0.18em] text-brand-red sm:text-[0.57rem] sm:tracking-[0.2em]">
-                      Feedback recebido
-                    </span>
-                    <p className="mt-2 line-clamp-3 text-[0.7rem] leading-5 text-white/70 sm:text-sm sm:leading-6">
-                      {feedback.quote}
-                    </p>
-                  </div>
-                  <ArrowUpRight className="hidden h-5 w-5 shrink-0 text-white/35 sm:block" />
-                </figcaption>
-              </figure>
-            </div>
-          ))}
+        <div
+          data-feedback-grid
+          className="feedback-marquee relative z-10 h-[46svh] min-h-0 overflow-hidden md:h-[68svh] xl:h-[84svh]"
+        >
+          <div
+            data-feedback-track
+            className="mx-auto grid h-full w-full max-w-[47rem] grid-cols-1 gap-5 md:grid-cols-2"
+          >
+            {/* Mobile: uma única coluna com todos os feedbacks */}
+            <MarqueeLane items={feedbacks} direction="up" duration={48} className="md:hidden" />
+
+            {/* Desktop: duas colunas independentes */}
+            {feedbackColumns.map((column, index) => (
+              <MarqueeLane
+                key={index}
+                items={column.items}
+                direction={column.direction}
+                duration={column.duration}
+                className="hidden md:block"
+              />
+            ))}
+          </div>
         </div>
       </div>
     </div>

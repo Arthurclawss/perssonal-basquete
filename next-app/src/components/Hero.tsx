@@ -5,20 +5,54 @@ import { useRef } from "react";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { Activity, ArrowDown, ArrowUpRight, Brain, Shield, Target } from "lucide-react";
+import { ArrowDown, ArrowUpRight } from "lucide-react";
 import AccordionGallery from "./AccordionGallery";
 import BlurText from "./BlurText";
 import DotField from "./DotField";
 import FoldText from "./FoldText";
 import MaskedHeading from "./MaskedHeading";
 import ShinyText from "./ShinyText";
-import SpotlightCard from "./SpotlightCard";
 import Testimonials from "./Testimonials";
 import TrainingShowcase from "./TrainingShowcase";
 import VariableProximity from "./VariableProximity";
 import TiltCard from "./TiltCard";
+import { syncSceneAnchors } from "@/lib/scroll-navigation";
+import { getOpeningPhase } from "@/lib/opening";
 
 const instagramUrl = "https://www.instagram.com/coachrafaelmelo/";
+
+const ExperienceMark = ({ className = "" }: { className?: string }) => (
+  <svg viewBox="0 0 48 48" className={className} aria-hidden="true">
+    <circle cx="24" cy="24" r="15.5" />
+    <path d="M24 8.5v6M24 33.5v6M8.5 24h6M33.5 24h6" />
+    <path d="m17 27 5-5 4 3 7-8" />
+  </svg>
+);
+
+const AthletesMark = ({ className = "" }: { className?: string }) => (
+  <svg viewBox="0 0 48 48" className={className} aria-hidden="true">
+    <circle cx="24" cy="16" r="5" />
+    <circle cx="11.5" cy="21" r="3.5" />
+    <circle cx="36.5" cy="21" r="3.5" />
+    <path d="M14.5 38c.7-7.2 4-11 9.5-11s8.8 3.8 9.5 11" />
+    <path d="M4.5 38c.5-5.4 2.8-8.2 7-8.2 1.8 0 3.3.5 4.4 1.5M43.5 38c-.5-5.4-2.8-8.2-7-8.2-1.8 0-3.3.5-4.4 1.5" />
+  </svg>
+);
+
+const TitlesMark = ({ className = "" }: { className?: string }) => (
+  <svg viewBox="0 0 48 48" className={className} aria-hidden="true">
+    <path d="M15 9h18v8c0 7-3.5 11-9 11s-9-4-9-11V9Z" />
+    <path d="M15 13H8v3c0 5 3 8 8.5 8M33 13h7v3c0 5-3 8-8.5 8M24 28v7M16 40h16M19 35h10" />
+  </svg>
+);
+
+const ObjectiveMark = ({ className = "" }: { className?: string }) => (
+  <svg viewBox="0 0 48 48" className={className} aria-hidden="true">
+    <path d="M9 38 38 9M24 9h14v14" />
+    <path d="M9 14v24h24" />
+    <path d="M9 30h8v8M9 22h16v16" />
+  </svg>
+);
 
 const resultStats = [
   {
@@ -26,59 +60,59 @@ const resultStats = [
     value: "10+",
     title: "Anos de experiência",
     description: "Uma década transformando treino em performance.",
-    icon: Target,
+    icon: ExperienceMark,
   },
   {
     number: "02",
     value: "500+",
     title: "Atletas desenvolvidos",
     description: "Diferentes níveis. O mesmo compromisso com a evolução.",
-    icon: Brain,
+    icon: AthletesMark,
   },
   {
     number: "03",
     value: "Vários",
     title: "Títulos estaduais",
     description: "Trabalho que já se transformou em conquista.",
-    icon: Activity,
+    icon: TitlesMark,
   },
   {
     number: "04",
     value: "01",
     title: "Objetivo",
     description: "Elevar o nível de cada atleta que entra em quadra.",
-    icon: Shield,
+    icon: ObjectiveMark,
   },
 ];
 
 const campGalleryItems = [
   {
     src: "/assets/camps/camp-01.jpg",
-    label: "Campeonato 01",
+    label: "Copa nordeste 2026",
     alt: "Equipe de basquete reunida com medalhas e troféus",
     objectPosition: "50% 54%",
   },
   {
     src: "/assets/camps/camp-02.jpeg",
-    label: "Campeonato 02",
+    label: "Fase nordeste de seleções 2023",
     alt: "Equipe de basquete de uniforme verde reunida com medalhas",
     objectPosition: "50% 70%",
   },
   {
     src: "/assets/camps/camp-03.jpg",
-    label: "Campeonato 03",
+    label: "Estadual 2024",
     alt: "Equipe de basquete alinhada na quadra com medalhas",
     objectPosition: "50% 50%",
   },
   {
     src: "/assets/camps/camp-04.jpg",
-    label: "Campeonato 04",
+    label: "Fase nordeste de seleções 2024",
     alt: "Equipe de basquete reunida diante do painel da competição",
     objectPosition: "50% 44%",
   },
   {
     src: "/assets/camps/camp-05.jpg",
-    label: "Campeonato 05",
+    label: "Fase nordeste de seleções 2024",
     alt: "Grupo de atletas e comissão técnica reunidos na quadra",
     objectPosition: "50% 48%",
   },
@@ -105,7 +139,9 @@ export default function Hero() {
   const transitionContentRef = useRef<HTMLDivElement>(null);
   const transitionGallerySceneRef = useRef<HTMLDivElement>(null);
   const transitionLogoRef = useRef<HTMLDivElement>(null);
+  const aboutSideBarRef = useRef<HTMLDivElement>(null);
   const testimonialsIntroRef = useRef<HTMLDivElement>(null);
+  const proofVerticalTrackRef = useRef<HTMLDivElement>(null);
   const trainingSceneRef = useRef<HTMLDivElement>(null);
   const feedbackSceneRef = useRef<HTMLDivElement>(null);
 
@@ -126,10 +162,23 @@ export default function Hero() {
           trainingSceneRef.current?.querySelectorAll("[data-training-card]") ?? [];
         const trainingBackdrop =
           trainingSceneRef.current?.querySelector("[data-training-backdrop]") ?? null;
+        const trainingHeadingPrimary =
+          trainingSceneRef.current?.querySelector("[data-training-heading-primary]") ?? null;
+        const trainingHeadingDetails =
+          trainingSceneRef.current?.querySelectorAll("[data-training-heading-detail]") ?? [];
+        const trainingControls =
+          trainingSceneRef.current?.querySelectorAll("[data-training-control]") ?? [];
         const feedbackCards =
           feedbackSceneRef.current?.querySelectorAll("[data-feedback-card]") ?? [];
+        const feedbackTrack =
+          feedbackSceneRef.current?.querySelector<HTMLElement>("[data-feedback-track]") ?? null;
+        const feedbackLanes =
+          feedbackSceneRef.current?.querySelectorAll<HTMLElement>("[data-feedback-lane]") ?? [];
         const feedbackCopy =
           feedbackSceneRef.current?.querySelectorAll("[data-feedback-copy]") ?? [];
+        const feedbackWords = feedbackSceneRef.current?.querySelectorAll("[data-feedback-heading] [data-cinematic-word]") ?? [];
+        const feedbackAccent = feedbackSceneRef.current?.querySelector("[data-feedback-accent]") ?? null;
+        const feedbackSubtitle = feedbackSceneRef.current?.querySelector("[data-feedback-subtitle]") ?? null;
         const frame = contentRef.current?.querySelector("[data-hero-frame]");
         if (!frame) return;
 
@@ -151,6 +200,19 @@ export default function Hero() {
           transformOrigin: "50% 0%",
           "--fold-crease": 0.62,
         });
+        gsap.set(methodRef.current?.querySelectorAll("[data-method-subtitle]") ?? [], {
+          autoAlpha: 0,
+          y: 20,
+          filter: "blur(6px)",
+        });
+        // Estado inicial explícito dos cards de resultado (evita salto do .from() no scrub)
+        gsap.set(methodRef.current?.querySelectorAll("[data-result-stat]") ?? [], {
+          autoAlpha: 0,
+          y: 48,
+          scale: 0.95,
+          filter: "blur(8px)",
+          force3D: true,
+        });
         gsap.set(transitionLineRef.current, {
           autoAlpha: 0,
           scaleX: 0,
@@ -159,6 +221,7 @@ export default function Hero() {
         });
         gsap.set(transitionPanelRef.current, {
           autoAlpha: 0,
+          scaleX: 0,
           scaleY: 0.002,
           transformOrigin: "50% 50%",
           force3D: true,
@@ -179,27 +242,18 @@ export default function Hero() {
           force3D: true,
         });
         gsap.set(transitionLogoRef.current, { autoAlpha: 0, scale: 0.94, rotate: -1.5 });
+        gsap.set(aboutSideBarRef.current, { autoAlpha: 1, xPercent: 0 });
+        gsap.set(testimonialsIntroRef.current, { autoAlpha: 0, yPercent: 0 });
         gsap.set(testimonialsIntroRef.current?.querySelectorAll("[data-intro-copy]") ?? [], {
           autoAlpha: 0,
-          x: -88,
-          y: 28,
-          scale: 0.9,
-          rotateY: -14,
-          rotateZ: -1.2,
-          filter: "blur(22px)",
-          clipPath: "inset(0 32% 0 0 round 2.6rem 0.65rem 4.8rem 0.65rem)",
-          transformPerspective: 1100,
-          transformOrigin: "0% 60%",
+          x: 28,
+          y: 0,
           force3D: true,
         });
         gsap.set(testimonialsIntroRef.current?.querySelectorAll("[data-masked-heading-word]") ?? [], {
           autoAlpha: 0,
-          yPercent: 128,
-          rotateX: -64,
-          rotateZ: (index) => (index % 2 === 0 ? 2.5 : -1.5),
-          filter: "blur(12px)",
-          transformPerspective: 900,
-          transformOrigin: "0% 100%",
+          y: 35,
+          filter: "blur(6px)",
           force3D: true,
         });
         gsap.set(testimonialsIntroRef.current?.querySelectorAll("[data-intro-detail]") ?? [], {
@@ -214,19 +268,27 @@ export default function Hero() {
           transformOrigin: "50% 0%",
           "--fold-crease": 0.62,
         });
-        gsap.set(testimonialsIntroRef.current?.querySelectorAll("[data-about-line]") ?? [], {
-          scaleX: 0,
-          transformOrigin: "0% 50%",
-        });
         gsap.set(testimonialsIntroRef.current?.querySelectorAll("[data-about-pillar]") ?? [], {
           autoAlpha: 0,
           y: 22,
           clipPath: "inset(0 100% 0 0)",
           force3D: true,
         });
+        gsap.set(trainingSceneRef.current, { autoAlpha: 0 });
+        gsap.set(proofVerticalTrackRef.current, { yPercent: 0, force3D: true });
+        gsap.set(feedbackSceneRef.current, { autoAlpha: 1 });
+        gsap.set(trainingHeadingPrimary, {
+          autoAlpha: 0,
+          y: 28,
+          filter: "blur(10px)",
+          force3D: true,
+        });
+        gsap.set(trainingHeadingDetails, { autoAlpha: 0 });
+        gsap.set(trainingControls, { autoAlpha: 0 });
         gsap.set(trainingCards, {
           autoAlpha: 0,
-          yPercent: (index) => [72, 88, 78][index] ?? 78,
+          y: 40,
+          scale: 0.95,
           force3D: true,
         });
         gsap.set(trainingBackdrop, {
@@ -236,16 +298,18 @@ export default function Hero() {
           force3D: true,
         });
         gsap.set(feedbackCards, {
-          autoAlpha: 0,
-          yPercent: (index) => [72, 88][index] ?? 78,
+          autoAlpha: 1,
+          y: 0,
+          scale: 1,
           force3D: true,
         });
-        gsap.set(feedbackCopy, {
-          autoAlpha: 0,
-          y: 96,
-          filter: "blur(14px)",
+        gsap.set(feedbackTrack, {
+          y: 0,
           force3D: true,
         });
+        gsap.set(feedbackLanes, { autoAlpha: 0, y: 56, force3D: true });
+        gsap.set(feedbackCopy, { autoAlpha: 0, y: 20, force3D: true });
+        gsap.set(feedbackWords, { autoAlpha: 0, yPercent: 115, force3D: true });
 
         gsap.to(logoLightRef.current?.querySelector(".hero-logo-light-core") ?? null, {
           scale: 1.1,
@@ -256,188 +320,179 @@ export default function Hero() {
           ease: "sine.inOut",
         });
 
+        // ─────────────────────────────────────────────────────────────
+        // Linha do tempo principal (scroll-driven).
+        // Cada bloco entra no seu tempo: os elementos chegam um após o
+        // outro, com pausas de leitura entre as cenas.
+        // Obs.: sem invalidateOnRefresh — ele fazia o GSAP reler os
+        // transforms no F5 e "congelar" deslocamentos (ex.: nome sumindo).
+        // ─────────────────────────────────────────────────────────────
         const timeline = gsap.timeline({
           defaults: { ease: "power2.out" },
           scrollTrigger: {
+            id: "hero-story",
             trigger: sectionRef.current,
             start: "top top",
             end: "bottom bottom",
-            scrub: 2.2,
+            scrub: 0.65,
+            onRefresh: syncSceneAnchors,
           },
         });
 
+        // The opening plays once in time; scrolling starts with the hero already visible.
+        const intro = gsap.timeline({ paused: true })
+          .to(logoRef.current, { opacity: 0.3, scale: 1.04, duration: 1.2 }, 0)
+          .to(logoLightRef.current, { opacity: 0.28, duration: 1.2 }, 0)
+          .to(textureRef.current, { autoAlpha: 1, duration: 0.9 }, 0.05)
+          .to(vignetteRef.current, { autoAlpha: 1, duration: 0.9 }, 0.1)
+          .to(blurSegments, { filter: "blur(0px)", opacity: 1, y: 0, duration: 0.9, stagger: { amount: 0.65 }, ease: "power3.out" }, 0.2)
+          .to(frame, { borderColor: "rgba(255,255,255,0.2)", duration: 0.7 }, 0.25)
+          .to(photoRef.current, {
+            autoAlpha: 1, clipPath: "polygon(0 0, 100% 0, 100% 100%, 0 100%)", scale: 1, rotate: 0,
+            duration: 1.2, ease: "power2.inOut",
+          }, 0.15)
+          .to(photoGlowRef.current, { opacity: 1, scale: 1, duration: 1 }, 0.25)
+          .to(interfaceElements, { opacity: 1, y: 0, duration: 0.7, stagger: 0.12 }, 0.8)
+          .to(exploreRef.current, { opacity: 1, y: 0, duration: 0.6 }, 1.1);
+        const onOpening = () => {
+          if (getOpeningPhase() === "revealing") intro.play();
+        };
+        window.addEventListener("site-opening", onOpening);
+        if (getOpeningPhase() === "complete") intro.progress(1);
+        else if (getOpeningPhase() === "revealing") intro.play();
+
         timeline
-          .to({}, { duration: 0.3 })
-          .to(logoRef.current, { opacity: 0.3, scale: 1.04, duration: 0.9, ease: "power2.out" }, 0.3)
-          .to(logoLightRef.current, { opacity: 0.28, duration: 0.92, ease: "power2.out" }, 0.3)
-          .to(textureRef.current, { autoAlpha: 1, duration: 0.96, ease: "power2.out" }, 0.42)
-          .to(vignetteRef.current, { autoAlpha: 1, duration: 0.9, ease: "power2.out" }, 0.5)
-          .to(
-            blurSegments,
-            {
-              filter: "blur(0px)",
-              opacity: 1,
-              y: 0,
-              duration: 1.08,
-              stagger: 0.055,
-              ease: "power2.out",
-            },
-            0.62,
-          )
-          .to(frame, { borderColor: "rgba(255,255,255,0.2)", duration: 0.78, ease: "power2.out" }, 0.82)
-          .to(
-            photoRef.current,
-            {
-              autoAlpha: 1,
-              clipPath: "polygon(0 0, 100% 0, 100% 100%, 0 100%)",
-              scale: 1,
-              rotate: 0,
-              duration: 1.42,
-              ease: "power2.inOut",
-            },
-            0.72,
-          )
-          .to(photoGlowRef.current, { opacity: 1, scale: 1, duration: 1.08, ease: "power2.out" }, 0.9)
-          .to(interfaceElements, { opacity: 1, y: 0, duration: 0.86, stagger: 0.14, ease: "power2.out" }, 1.02)
-          .to(exploreRef.current, { opacity: 1, y: 0, duration: 0.62, ease: "power2.out" }, 1.58)
-          .to({}, { duration: 0.72 })
+          .addLabel("homeReady", 0)
+          .to({}, { duration: 2.4 })
+
+          // ── Cena 2: Resultados ────────────────────────────────────
+          .addLabel("heroExit")
           .to(
             currentSceneRef.current,
-            { autoAlpha: 0, y: -72, scale: 0.96, filter: "blur(14px)", duration: 0.62, ease: "power3.inOut" },
+            { autoAlpha: 0, y: -72, scale: 0.96, filter: "blur(14px)", duration: 1.2, ease: "power2.inOut" },
+            "heroExit",
           )
-          .to(exploreRef.current, { opacity: 0, duration: 0.2 }, "<")
+          .to(exploreRef.current, { opacity: 0, duration: 0.4 }, "heroExit")
           .to(
             methodRef.current,
-            { autoAlpha: 1, y: 0, filter: "blur(0px)", duration: 0.78, ease: "power4.out" },
-            "-=0.18",
+            { autoAlpha: 1, y: 0, filter: "blur(0px)", duration: 1.1 },
+            "heroExit+=0.9",
           )
           .to(
             methodRef.current?.querySelectorAll("[data-fold-piece]") ?? [],
-            {
-              opacity: 1,
-              rotateX: 0,
-              "--fold-crease": 0,
-              duration: 0.62,
-              stagger: 0.065,
-              ease: "power3.out",
-            },
-            "-=0.56",
+            { opacity: 1, rotateX: 0, "--fold-crease": 0, duration: 1, stagger: 0.12 },
+            ">-0.6",
           )
-          .from(
-            methodRef.current?.querySelectorAll("[data-result-stat]") ?? [],
-            { y: 60, opacity: 0, rotateX: -12, duration: 0.58, stagger: 0.09, ease: "power3.out" },
-            "-=0.48",
-          )
-          .to({}, { duration: 0.72 })
           .to(
-            transitionLineRef.current,
+            methodRef.current?.querySelectorAll("[data-method-subtitle]") ?? [],
+            { autoAlpha: 1, y: 0, filter: "blur(0px)", duration: 0.9 },
+            ">-0.2",
+          )
+          .to(
+            methodRef.current?.querySelectorAll("[data-result-stat]") ?? [],
             {
               autoAlpha: 1,
-              scaleX: 1,
-              duration: 0.62,
-              ease: "power3.inOut",
+              y: 0,
+              scale: 1,
+              filter: "blur(0px)",
+              duration: 1.4,
+              stagger: 0.6,
               force3D: true,
             },
+            ">+0.2",
           )
-          .to({}, { duration: 0.16 })
-          .set(transitionPanelRef.current, { autoAlpha: 1 })
-          .to(
-            transitionPanelRef.current,
-            {
-              scaleY: 1,
-              duration: 1.35,
-              ease: "power3.inOut",
-              force3D: true,
-            },
-          )
-          .to(transitionLineRef.current, { autoAlpha: 0, duration: 0.2, ease: "sine.out" }, "-=1.08")
-          .to(transitionOverlayRef.current, { autoAlpha: 1, duration: 0.34, ease: "sine.out" }, "-=0.3")
+          .addLabel("resultsReady")
+          .to({}, { duration: 2.5 })
+
+          // ── Transição vermelha + galeria ──────────────────────────
+          .addLabel("redFill")
+          .set([transitionLineRef.current, transitionPanelRef.current], { autoAlpha: 1 }, "redFill")
+          .to([transitionLineRef.current, transitionPanelRef.current], {
+            scaleX: 1,
+            duration: 0.9,
+            ease: "none",
+            force3D: true,
+          }, "redFill")
+          .to(transitionPanelRef.current, {
+            scaleY: 1,
+            duration: 1.5,
+            ease: "power1.inOut",
+            force3D: true,
+          }, "redFill+=0.65")
+          .to(transitionLineRef.current, { autoAlpha: 0, duration: 0.3 }, "redFill+=0.85")
+          .to(transitionOverlayRef.current, { autoAlpha: 1, duration: 0.4 }, "redFill+=1.85")
           .to(
             transitionLogoRef.current,
-            { autoAlpha: 0.18, scale: 1, rotate: 0, duration: 0.48, ease: "power2.out" },
-            "-=0.3",
+            { autoAlpha: 0.18, scale: 1, rotate: 0, duration: 0.9 },
+            ">-0.2",
           )
           .to(
             transitionBlurSegments,
             {
               keyframes: [
-                { filter: "blur(5px)", opacity: 0.5, y: 4, duration: 0.34 },
-                { filter: "blur(0px)", opacity: 1, y: 0, duration: 0.5 },
+                { filter: "blur(5px)", opacity: 0.5, y: 4, duration: 0.5 },
+                { filter: "blur(0px)", opacity: 1, y: 0, duration: 0.7 },
               ],
-              stagger: 0.075,
-              ease: "power2.out",
+              stagger: 0.15,
             },
-            "-=0.18",
+            ">-0.4",
           )
           .to(
             transitionGalleryPanels,
             {
               opacity: 1,
               clipPath: "inset(0 0 0% 0)",
+              y: 0,
               yPercent: 0,
-              duration: 1.28,
-              stagger: 0.12,
+              duration: 1.6,
+              stagger: 0.35,
               ease: "power2.inOut",
               force3D: true,
             },
-            "-=0.3",
+            ">-0.2",
           )
-          .to({}, { duration: 0.78 })
-          .to(
-            transitionTrackRef.current,
-            {
-              xPercent: -50,
-              duration: 1.85,
-              ease: "power2.inOut",
-              force3D: true,
-            },
-          )
-          .to(transitionGallerySceneRef.current, { autoAlpha: 0, duration: 0.01 })
-          .addLabel("introReveal")
+          .addLabel("championshipsReady")
+          .to({}, { duration: 1.5 })
+          .addLabel("aboutSlide")
+          .to(transitionTrackRef.current, {
+            xPercent: -50,
+            duration: 2.4,
+            ease: "power2.inOut",
+            force3D: true,
+          }, "aboutSlide")
+
+          // ── Cena 3: Sobre mim ─────────────────────────────────────
+          .addLabel("introReveal", "aboutSlide+=0.35")
+          .to(testimonialsIntroRef.current, { autoAlpha: 1, y: 0, yPercent: 0, duration: 0.65 }, "introReveal")
           .to(
             testimonialsIntroRef.current?.querySelectorAll("[data-intro-copy]") ?? [],
             {
               autoAlpha: 1,
               x: 0,
               y: 0,
-              scale: 1,
-              rotateY: 0,
-              rotateZ: 0,
-              filter: "blur(0px)",
-              clipPath: "inset(0 0% 0 0 round 2.6rem 0.65rem 4.8rem 0.65rem)",
-              duration: 1.2,
-              ease: "power4.out",
-              force3D: true,
-            },
-            "introReveal",
-          )
-          .to(
-            testimonialsIntroRef.current?.querySelectorAll("[data-masked-heading-word]") ?? [],
-            {
-              autoAlpha: 1,
-              yPercent: 0,
-              rotateX: 0,
-              rotateZ: 0,
-              filter: "blur(0px)",
-              duration: 0.9,
-              stagger: { amount: 0.3 },
-              ease: "power4.out",
+              duration: 1.4,
+              ease: "power3.out",
               force3D: true,
             },
             "introReveal",
           )
           .to(
             testimonialsIntroRef.current?.querySelectorAll("[data-intro-detail]") ?? [],
+            { autoAlpha: 1, y: 0, filter: "blur(0px)", duration: 1, stagger: 0.3, force3D: true },
+            "introReveal+=0.5",
+          )
+          .to(
+            testimonialsIntroRef.current?.querySelectorAll("[data-masked-heading-word]") ?? [],
             {
               autoAlpha: 1,
               y: 0,
               filter: "blur(0px)",
-              duration: 1,
-              stagger: 0.08,
+              duration: 1.1,
+              stagger: 0.35,
               ease: "power3.out",
               force3D: true,
             },
-            "introReveal+=0.2",
+            "introReveal+=1.0",
           )
           .to(
             testimonialsIntroRef.current?.querySelectorAll("[data-fold-piece]") ?? [],
@@ -445,21 +500,10 @@ export default function Hero() {
               opacity: 1,
               rotateX: 0,
               "--fold-crease": 0,
-              duration: 1.1,
-              stagger: { amount: 1.8 },
-              ease: "power2.out",
+              duration: 1,
+              stagger: { amount: 2.6 },
             },
-            "introReveal+=0.15",
-          )
-          .to(
-            testimonialsIntroRef.current?.querySelectorAll("[data-about-line]") ?? [],
-            {
-              scaleX: 1,
-              duration: 0.9,
-              stagger: 0.08,
-              ease: "power3.inOut",
-            },
-            "introReveal+=0.28",
+            ">-0.4",
           )
           .to(
             testimonialsIntroRef.current?.querySelectorAll("[data-about-pillar]") ?? [],
@@ -467,128 +511,100 @@ export default function Hero() {
               autoAlpha: 1,
               y: 0,
               clipPath: "inset(0 0% 0 0)",
-              duration: 0.82,
-              stagger: 0.08,
-              ease: "power3.out",
+              duration: 1,
+              stagger: 0.4,
               force3D: true,
             },
-            "introReveal+=0.48",
+            ">-0.6",
           )
-          .to({}, { duration: 1.5 })
+          .addLabel("aboutReady")
+          .to({}, { duration: 2.5 })
+
+          // ── Cena 4: Vídeos de treino ──────────────────────────────
           .addLabel("trainingOverlay")
           .addLabel("aboutExit", "trainingOverlay")
           .to(
             testimonialsIntroRef.current,
-            {
-              yPercent: -110,
-              duration: 1.45,
-              ease: "power2.inOut",
-              force3D: true,
-            },
+            { y: 0, yPercent: -110, duration: 1.8, ease: "power2.inOut", force3D: true },
             "aboutExit",
           )
           .to(
             testimonialsIntroRef.current,
-            {
-              autoAlpha: 0,
-              duration: 0.75,
-              ease: "power2.in",
-            },
-            "aboutExit+=0.35",
+            { autoAlpha: 0, duration: 1, ease: "power2.in" },
+            "aboutExit+=0.5",
           )
-          .addLabel("backgroundReveal", "aboutExit+=1.46")
+          .to(
+            aboutSideBarRef.current,
+            { autoAlpha: 0, xPercent: -100, duration: 1, ease: "power2.inOut", force3D: true },
+            "aboutExit+=0.3",
+          )
+          .addLabel("backgroundReveal", "aboutExit+=1.8")
+          .set(trainingSceneRef.current, { autoAlpha: 1 }, "backgroundReveal")
           .to(
             trainingBackdrop,
             {
               autoAlpha: 1,
               scale: 1,
               clipPath: "inset(0% 0 0% 0)",
-              duration: 0.62,
-              ease: "power3.inOut",
+              duration: 1,
+              ease: "power2.inOut",
               force3D: true,
             },
             "backgroundReveal",
           )
-          .addLabel("videoSequence", "backgroundReveal+=0.9")
+          .to(
+            trainingHeadingPrimary,
+            { autoAlpha: 1, y: 0, filter: "blur(0px)", duration: 1, force3D: true },
+            "backgroundReveal+=0.3",
+          )
+          .to(
+            trainingHeadingDetails,
+            { autoAlpha: 1, duration: 0.8, stagger: 0.15 },
+            ">-0.3",
+          )
+          .addLabel("videoSequence", ">")
           .to(
             trainingCards,
-            {
-              yPercent: 0,
-              duration: 2.35,
-              stagger: 0.16,
-              ease: "power2.out",
-              force3D: true,
-            },
+            { autoAlpha: 1, y: 0, scale: 1, duration: 1.4, force3D: true },
             "videoSequence",
           )
           .to(
-            trainingCards,
-            {
-              autoAlpha: 1,
-              duration: 0.85,
-              stagger: 0.12,
-              ease: "power2.out",
-            },
-            "videoSequence",
+            trainingControls,
+            { autoAlpha: 1, duration: 0.8, stagger: 0.12 },
+            ">-0.4",
           )
-          .addLabel("videosExit", "videoSequence+=3.95")
-          .to(
-            trainingCards,
-            {
-              yPercent: (index) => [-225, -248, -232][index] ?? -230,
-              duration: 3.6,
-              stagger: 0.18,
-              ease: "none",
-              force3D: true,
-            },
-            "videosExit",
-          )
-          .to(
-            trainingCards,
-            {
-              autoAlpha: 0,
-              duration: 1.25,
-              stagger: 0.12,
-              ease: "power1.in",
-            },
-            "videosExit+=2.25",
-          )
-          .addLabel("feedbackOverlay", "videosExit+=1.45")
-          .to(
-            feedbackCards,
-            {
-              yPercent: 0,
-              duration: 2.35,
-              stagger: 0.16,
-              ease: "power2.out",
-              force3D: true,
-            },
-            "feedbackOverlay",
-          )
-          .to(
-            feedbackCards,
-            {
-              autoAlpha: 1,
-              duration: 0.85,
-              stagger: 0.12,
-              ease: "power2.out",
-            },
-            "feedbackOverlay",
-          )
-          .to(
-            feedbackCopy,
-            {
-              autoAlpha: 1,
-              y: 0,
-              filter: "blur(0px)",
-              duration: 2.05,
-              stagger: { amount: 0.3 },
-              ease: "power3.out",
-              force3D: true,
-            },
-            "feedbackOverlay",
-          )
-          .to({}, { duration: 2.2 });
+          .addLabel("trainingReady")
+          .to({}, { duration: 3 })
+
+          // One continuous sequence: training moves out while the feedbacks arrive.
+          .addLabel("videosExit")
+          .to(trainingCards,
+            { autoAlpha: 0, y: -24, duration: 1.2, ease: "power2.inOut", force3D: true },
+            "videosExit")
+          .to(proofVerticalTrackRef.current,
+            { y: 0, yPercent: -50, duration: 2.8, ease: "power2.inOut", force3D: true },
+            "videosExit")
+          .addLabel("feedbackOverlay", "videosExit+=0.65")
+          .to(feedbackLanes,
+            { autoAlpha: 1, y: 0, duration: 1.8, stagger: 0.12, ease: "power3.out", force3D: true },
+            "feedbackOverlay")
+          .to(feedbackAccent,
+            { autoAlpha: 1, y: 0, duration: 0.9, ease: "power3.out" },
+            "feedbackOverlay+=0.3")
+          .to(feedbackWords,
+            { autoAlpha: 1, yPercent: 0, duration: 1.2, stagger: { amount: 1.1 }, ease: "power3.out", force3D: true },
+            "feedbackOverlay+=0.5")
+          .to(feedbackSubtitle,
+            { autoAlpha: 1, y: 0, duration: 1, ease: "power3.out" },
+            "feedbackOverlay+=1.6")
+          .addLabel("feedbackReady")
+          .to({}, { duration: 2 });
+
+        syncSceneAnchors(timeline.scrollTrigger!);
+
+        // Disponível para depuração no console: window.__heroTimeline
+        (window as unknown as { __heroTimeline?: gsap.core.Timeline }).__heroTimeline = timeline;
+        return () => window.removeEventListener("site-opening", onOpening);
       });
 
       media.add("(prefers-reduced-motion: reduce)", () => {
@@ -606,6 +622,10 @@ export default function Hero() {
           trainingSceneRef.current?.querySelector("[data-training-backdrop]") ?? null;
         const feedbackCards =
           feedbackSceneRef.current?.querySelectorAll("[data-feedback-card]") ?? [];
+        const feedbackTrack =
+          feedbackSceneRef.current?.querySelector("[data-feedback-track]") ?? null;
+        const feedbackLanes =
+          feedbackSceneRef.current?.querySelectorAll("[data-feedback-lane]") ?? [];
         const feedbackCopy =
           feedbackSceneRef.current?.querySelectorAll("[data-feedback-copy]") ?? [];
         const frame = contentRef.current?.querySelector("[data-hero-frame]");
@@ -621,6 +641,18 @@ export default function Hero() {
           opacity: 1,
           rotateX: 0,
           "--fold-crease": 0,
+        });
+        gsap.set(methodRef.current?.querySelectorAll("[data-method-subtitle]") ?? [], {
+          autoAlpha: 1,
+          y: 0,
+          filter: "blur(0px)",
+        });
+        gsap.set(methodRef.current?.querySelectorAll("[data-result-stat]") ?? [], {
+          autoAlpha: 1,
+          y: 0,
+          scale: 1,
+          filter: "blur(0px)",
+          clearProps: "transform",
         });
         gsap.set(transitionOverlayRef.current, { autoAlpha: 0 });
         gsap.set(transitionGallerySceneRef.current, { autoAlpha: 1 });
@@ -639,6 +671,10 @@ export default function Hero() {
           yPercent: 0,
         });
         gsap.set(transitionTrackRef.current, { xPercent: 0 });
+        gsap.set(aboutSideBarRef.current, { autoAlpha: 1, xPercent: 0 });
+        gsap.set(proofVerticalTrackRef.current, { yPercent: 0 });
+        gsap.set(trainingSceneRef.current, { autoAlpha: 0 });
+        gsap.set(testimonialsIntroRef.current, { autoAlpha: 1 });
         gsap.set(testimonialsIntroRef.current?.querySelectorAll("[data-intro-copy]") ?? [], {
           autoAlpha: 1,
           filter: "blur(0px)",
@@ -662,9 +698,6 @@ export default function Hero() {
           rotateX: 0,
           "--fold-crease": 0,
         });
-        gsap.set(testimonialsIntroRef.current?.querySelectorAll("[data-about-line]") ?? [], {
-          scaleX: 1,
-        });
         gsap.set(testimonialsIntroRef.current?.querySelectorAll("[data-about-pillar]") ?? [], {
           autoAlpha: 1,
           clipPath: "none",
@@ -676,11 +709,14 @@ export default function Hero() {
         });
         gsap.set(trainingBackdrop, { autoAlpha: 0, clipPath: "none", clearProps: "transform" });
         gsap.set(feedbackCards, {
-          autoAlpha: 0,
+          autoAlpha: 1,
+          scale: 1,
           clearProps: "transform",
         });
+        gsap.set(feedbackTrack, { clearProps: "transform" });
+        gsap.set(feedbackLanes, { clearProps: "transform" });
         gsap.set(feedbackCopy, {
-          autoAlpha: 0,
+          autoAlpha: 1,
           clearProps: "transform,filter",
         });
         gsap.set([transitionLineRef.current, transitionPanelRef.current], { autoAlpha: 0 });
@@ -706,6 +742,7 @@ export default function Hero() {
             gsap.set(methodRef.current, { autoAlpha: 0 });
             gsap.set(transitionPanelRef.current, {
               autoAlpha: 1,
+              scaleX: 1,
               scaleY: 1,
               transformOrigin: "50% 50%",
             });
@@ -731,7 +768,6 @@ export default function Hero() {
           start: "84% center",
           onEnter: () => {
             gsap.set(transitionTrackRef.current, { xPercent: -50 });
-            gsap.set(transitionGallerySceneRef.current, { autoAlpha: 0 });
           },
           onLeaveBack: () => {
             gsap.set(transitionGallerySceneRef.current, { autoAlpha: 1 });
@@ -744,11 +780,15 @@ export default function Hero() {
           start: "88% center",
           onEnter: () => {
             gsap.set(testimonialsIntroRef.current, { autoAlpha: 0 });
+            gsap.set(aboutSideBarRef.current, { autoAlpha: 0, xPercent: -100 });
+            gsap.set(trainingSceneRef.current, { autoAlpha: 1 });
             gsap.set(trainingBackdrop, { autoAlpha: 1, scale: 1 });
-            gsap.set(trainingCards, { autoAlpha: 1, yPercent: 0 });
+            gsap.set(trainingCards, { autoAlpha: 1, y: 0, scale: 1, clearProps: "transform" });
           },
           onLeaveBack: () => {
             gsap.set(testimonialsIntroRef.current, { autoAlpha: 1, clearProps: "transform" });
+            gsap.set(aboutSideBarRef.current, { autoAlpha: 1, xPercent: 0 });
+            gsap.set(trainingSceneRef.current, { autoAlpha: 0 });
             gsap.set(trainingBackdrop, { autoAlpha: 0, clearProps: "transform" });
             gsap.set(trainingCards, { autoAlpha: 0, clearProps: "transform" });
           },
@@ -758,12 +798,16 @@ export default function Hero() {
           trigger: sectionRef.current,
           start: "93% center",
           onEnter: () => {
+            gsap.set(proofVerticalTrackRef.current, { yPercent: -50 });
+            gsap.set(trainingSceneRef.current, { autoAlpha: 0 });
             gsap.set(trainingCards, { autoAlpha: 0 });
-            gsap.set(feedbackCards, { autoAlpha: 1, yPercent: 0 });
+            gsap.set(feedbackCards, { autoAlpha: 1, y: 0, scale: 1 });
             gsap.set(feedbackCopy, { autoAlpha: 1, clearProps: "transform,filter" });
           },
           onLeaveBack: () => {
-            gsap.set(trainingCards, { autoAlpha: 1, yPercent: 0 });
+            gsap.set(proofVerticalTrackRef.current, { yPercent: 0 });
+            gsap.set(trainingSceneRef.current, { autoAlpha: 1 });
+            gsap.set(trainingCards, { autoAlpha: 1, y: 0, scale: 1, clearProps: "transform" });
             gsap.set(feedbackCards, { autoAlpha: 0, clearProps: "transform" });
             gsap.set(feedbackCopy, { autoAlpha: 0, clearProps: "transform,filter" });
           },
@@ -787,15 +831,18 @@ export default function Hero() {
     <section
       ref={sectionRef}
       id="inicio"
-      className="relative h-[1100svh] bg-brand-black lg:h-[1200svh]"
+      className="relative h-[1040svh] bg-brand-black lg:h-[1160svh]"
     >
-      <span id="resultados" className="pointer-events-none absolute top-[22%]" aria-hidden="true" />
+      <span id="resultados" className="pointer-events-none absolute top-[35%]" aria-hidden="true" />
+      <span id="campeonatos" className="pointer-events-none absolute top-[76%]" aria-hidden="true" />
       <span id="sobre" className="pointer-events-none absolute top-[85%]" aria-hidden="true" />
-      <span id="depoimentos" className="pointer-events-none absolute top-[92%]" aria-hidden="true" />
-      <div className="sticky top-0 flex min-h-[100svh] items-center overflow-hidden pb-16 pt-28 lg:pb-20 lg:pt-32">
+      <span id="treinos" className="pointer-events-none absolute top-[90%]" aria-hidden="true" />
+      <span id="depoimentos" className="pointer-events-none absolute top-[94%]" aria-hidden="true" />
+      <div className="sticky top-0 flex h-[100svh] items-center overflow-hidden pb-16 pt-28 lg:pb-20 lg:pt-32">
       <div ref={logoRef} className="hero-logo-backdrop pointer-events-none absolute inset-0 z-[1]" aria-hidden="true">
         <Image
           src="/assets/hoop-master-logo.png"
+          data-opening-asset="logo"
           alt=""
           fill
           preload
@@ -809,7 +856,7 @@ export default function Hero() {
       <div ref={textureRef} className="absolute inset-0 z-[2] opacity-0 mix-blend-screen">
         <DotField />
       </div>
-      <div ref={vignetteRef} className="hero-dot-vignette grain pointer-events-none absolute inset-0 z-[3] opacity-0" />
+      <div ref={vignetteRef} className="hero-dot-vignette pointer-events-none absolute inset-0 z-[3] opacity-0" />
 
       <div ref={currentSceneRef} className="relative z-10 mx-auto grid w-full max-w-[1440px] items-center gap-10 px-5 sm:px-8 lg:grid-cols-[1.08fr_0.92fr] lg:px-12">
         <div ref={contentRef} className="relative z-20 max-w-4xl pt-6 lg:pt-0">
@@ -861,6 +908,8 @@ export default function Hero() {
           >
             <Image
               src="/assets/coach-2.jpg"
+              data-opening-asset="coach"
+              loading="eager"
               alt="Coach Rafael Melo à beira da quadra"
               fill
               sizes="(max-width: 1024px) 0px, 42vw"
@@ -887,17 +936,21 @@ export default function Hero() {
 
       <div
         ref={methodRef}
+        data-results-scene
         className="invisible absolute inset-0 z-20 flex items-center px-5 opacity-0 sm:px-8 lg:px-12"
       >
         <div className="mx-auto w-full max-w-[1440px]">
-          <div className="grid gap-8 border-b border-white/20 pb-8 lg:grid-cols-[0.55fr_1.45fr] lg:items-end lg:pb-10">
-            <div>
-              <span className="section-kicker text-brand-red">Resultados Hoop Master</span>
-              <p className="mt-4 max-w-xs text-sm leading-6 text-white/55">
+          <div className="flex flex-col gap-5 border-b border-white/10 pb-8 mb-8 lg:pb-12 lg:mb-12">
+            <div className="order-2 mt-2">
+
+              <p
+                data-method-subtitle
+                className="max-w-xl text-base sm:text-lg font-medium leading-relaxed text-white/60"
+              >
                 Não é promessa. É evolução construída atleta por atleta.
               </p>
             </div>
-            <h2 className="font-heading text-[clamp(2.55rem,5.55vw,6rem)] font-black uppercase leading-[0.86] tracking-[-0.055em] text-white">
+            <h2 className="order-1 font-heading text-[clamp(2.55rem,5.55vw,6rem)] font-black uppercase leading-[0.86] tracking-[-0.055em] text-white">
               <FoldText
                 lines={["Formando atletas", "Construindo legados"]}
                 lineClassNames={["text-white", "text-brand-red"]}
@@ -905,19 +958,22 @@ export default function Hero() {
             </h2>
           </div>
 
-          <div className="grid grid-cols-2 lg:grid-cols-4">
+          <div className="result-metrics-grid grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
             {resultStats.map((stat) => {
               const Icon = stat.icon;
               return (
-                <SpotlightCard
-                  key={stat.number}
-                  className="group min-h-44 border-b border-r border-white/15 p-4 sm:min-h-52 sm:p-6 lg:min-h-64 lg:border-b-0 lg:p-8"
-                >
-                  <div className="flex items-start justify-between">
-                    <span className="font-heading text-xs font-black tracking-[0.16em] text-brand-red">{stat.number}</span>
-                    <Icon className="h-5 w-5 text-white/45 transition-colors group-hover:text-brand-red" strokeWidth={1.6} />
+                <TiltCard key={stat.number} className="h-full w-full">
+                  <article
+                    data-result-stat
+                    className="result-metric-card group w-full h-full"
+                  >
+                    <div className="result-metric-card__header">
+                      <span className="result-metric-card__icon-wrap">
+                        <Icon className="result-metric-card__icon" />
+                      </span>
                   </div>
-                  <p className="mt-8 font-heading text-[clamp(2.4rem,4vw,4.8rem)] font-black uppercase leading-none tracking-[-0.055em] text-white sm:mt-10">
+                  <div className="result-metric-card__rule" aria-hidden="true"><span /></div>
+                  <p className="result-metric-card__value">
                     <VariableProximity
                       label={stat.value}
                       containerRef={methodRef}
@@ -926,11 +982,12 @@ export default function Hero() {
                       radius={150}
                     />
                   </p>
-                  <h3 className="mt-4 max-w-[12rem] font-heading text-base font-black uppercase leading-tight tracking-[-0.02em] text-white sm:text-lg">
+                  <h3 className="result-metric-card__title">
                     {stat.title}
                   </h3>
-                  <p className="mt-2 max-w-[15rem] text-xs leading-5 text-white/50 sm:text-sm">{stat.description}</p>
-                </SpotlightCard>
+                  <p className="result-metric-card__description">{stat.description}</p>
+                  </article>
+                </TiltCard>
               );
             })}
           </div>
@@ -946,7 +1003,7 @@ export default function Hero() {
       <div
         ref={transitionPanelRef}
         className="transition-screen invisible absolute inset-0 z-30 bg-brand-red opacity-0"
-        style={{ transform: "scaleY(0.002)", transformOrigin: "50% 50%" }}
+        style={{ transform: "scale(0, 0.002)", transformOrigin: "50% 50%" }}
         aria-hidden="true"
       />
 
@@ -956,6 +1013,8 @@ export default function Hero() {
             ref={transitionGallerySceneRef}
             className="relative h-full w-screen shrink-0 overflow-hidden bg-brand-red"
           >
+
+
             <div ref={transitionLogoRef} className="pointer-events-none absolute inset-0 opacity-0" aria-hidden="true">
               <Image
                 src="/assets/hoop-master-logo.png"
@@ -981,12 +1040,12 @@ export default function Hero() {
                 <AccordionGallery
                   items={campGalleryItems}
                   height={400}
-                  gap={10}
-                  radius={0}
+                  gap={12}
+                  radius={20}
                   defaultIndex={0}
                   expandRatio={0.52}
-                  tilt={8}
-                  parallax={0.5}
+                  tilt={3}
+                  parallax={0.3}
                   accentColor="#ffffff"
                   overlayColor="#070707"
                   textColor="#ffffff"
@@ -996,16 +1055,38 @@ export default function Hero() {
           </div>
 
           <div className="about-red-stage relative h-full w-screen shrink-0 overflow-hidden">
+            {/* Slanted red transition from previous screen */}
+            <div
+              ref={aboutSideBarRef}
+              className="absolute bottom-0 left-0 top-0 z-10 w-[12vw] bg-brand-red [clip-path:polygon(0_0,100%_0,0_100%)] pointer-events-none"
+              aria-hidden="true"
+            />
+
             <div className="relative h-full w-full overflow-hidden">
 
-              <div ref={testimonialsIntroRef} className="absolute inset-0 z-20 flex items-center px-5 sm:px-8 lg:px-12">
+              <div ref={testimonialsIntroRef} data-about-scene className="invisible absolute inset-0 z-20 flex items-center px-5 opacity-0 sm:px-8 lg:px-12">
                 <div className="about-rafael-panel relative mx-auto w-full max-w-[1440px]">
-                  <div className="about-red-atmosphere__rafael pointer-events-none absolute -right-[8%] top-1/2 -translate-y-1/2 font-heading text-[clamp(8rem,20vw,20rem)] font-black uppercase leading-none tracking-[-0.09em]" aria-hidden="true">
-                    Rafael
+                  <div className="pointer-events-none absolute right-[-10%] top-1/2 -translate-y-1/2 opacity-[0.05] mix-blend-screen select-none" aria-hidden="true">
+                    <Image
+                      src="/assets/hoop-master-logo.png"
+                      alt=""
+                      width={1000}
+                      height={1000}
+                      className="w-[clamp(25rem,45vw,55rem)] object-contain"
+                    />
                   </div>
-                  <div data-intro-detail className="relative pb-3 sm:pb-4">
-                    <div className="inline-flex bg-brand-red px-3 py-1.5">
-                      <span className="text-[0.6rem] font-black uppercase tracking-[0.25em] text-black">Sobre mim</span>
+                  <div data-intro-detail className="relative pb-3 sm:pb-4 flex items-center">
+                    {/* Elementos decorativos de velocidade */}
+                    <div className="flex space-x-1 mr-3">
+                      <span className="h-4 w-1 bg-brand-red -skew-x-[15deg] opacity-30"></span>
+                      <span className="h-4 w-1 bg-brand-red -skew-x-[15deg] opacity-60"></span>
+                      <span className="h-4 w-1.5 bg-brand-red -skew-x-[15deg]"></span>
+                    </div>
+                    {/* Bloco inclinado com estilo premium */}
+                    <div className="relative inline-flex items-center justify-center border border-brand-red/30 bg-black/40 px-4 py-1.5 -skew-x-[15deg] backdrop-blur-md shadow-lg">
+                      <div className="absolute top-0 left-0 w-3 h-[2px] bg-brand-red"></div>
+                      <div className="absolute bottom-0 right-0 w-3 h-[2px] bg-brand-red"></div>
+                      <span className="text-[0.65rem] font-black uppercase tracking-[0.25em] text-white skew-x-[15deg] drop-shadow-md">Sobre mim</span>
                     </div>
                   </div>
 
@@ -1071,19 +1152,21 @@ export default function Hero() {
                 </div>
               </div>
 
-              <div ref={trainingSceneRef} className="absolute inset-0 z-10 flex items-center overflow-hidden px-5 py-8 sm:px-8 lg:px-12 lg:py-10">
-                <div data-training-backdrop className="training-backdrop-surface pointer-events-none invisible absolute inset-0 opacity-0" aria-hidden="true">
-                  <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 font-heading text-[18vw] font-black uppercase leading-none tracking-[-0.08em] text-white/[0.022]">
-                    Evolução
+              <div ref={proofVerticalTrackRef} className="absolute inset-x-0 top-0 z-30 h-[200%] w-full will-change-transform">
+                <div ref={trainingSceneRef} className="invisible relative flex h-1/2 w-full items-center overflow-hidden px-5 py-8 opacity-0 sm:px-8 lg:px-12 lg:py-10">
+                  <div data-training-backdrop className="training-backdrop-surface pointer-events-none invisible absolute inset-0 opacity-0" aria-hidden="true">
+                    <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 font-heading text-[18vw] font-black uppercase leading-none tracking-[-0.08em] text-white/[0.045]">
+                      Evolução
+                    </div>
+                  </div>
+                  <div className="relative z-10 mx-auto w-full max-w-[1380px]">
+                    <TrainingShowcase />
                   </div>
                 </div>
-                <div className="relative z-10 mx-auto w-full max-w-[1380px]">
-                  <TrainingShowcase />
-                </div>
-              </div>
 
-              <div ref={feedbackSceneRef} className="absolute inset-0 z-30 overflow-hidden">
-                <Testimonials />
+                <div ref={feedbackSceneRef} className="pointer-events-none relative h-1/2 w-full overflow-hidden">
+                  <Testimonials />
+                </div>
               </div>
             </div>
           </div>

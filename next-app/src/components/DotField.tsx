@@ -28,14 +28,14 @@ interface DotFieldProps {
 const DotField = memo(function DotField({
   dotRadius = 1.7,
   dotSpacing = 17,
-  cursorRadius = 360,
-  bulgeStrength = 52,
-  glowRadius = 220,
+  cursorRadius = 240,
+  bulgeStrength = 18,
+  glowRadius = 150,
   sparkle = true,
-  waveAmplitude = 1.5,
-  gradientFrom = "rgba(255, 26, 26, 0.62)",
-  gradientTo = "rgba(225, 229, 234, 0.26)",
-  glowColor = "rgba(255, 26, 26, 0.18)",
+  waveAmplitude = 0.7,
+  gradientFrom = "rgba(255, 26, 26, 0.48)",
+  gradientTo = "rgba(204, 0, 0, 0.3)",
+  glowColor = "rgba(255, 26, 26, 0.14)",
   className = "",
 }: DotFieldProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -131,7 +131,7 @@ const DotField = memo(function DotField({
 
       const targetEngagement = reducedMotion || !pointerInsideRef.current
         ? 0
-        : Math.min(0.58 + speed / 12, 1);
+        : Math.min(0.34 + speed / 24, 0.68);
       engagementRef.current += (targetEngagement - engagementRef.current) * 0.06;
       glowOpacityRef.current += (engagementRef.current - glowOpacityRef.current) * 0.08;
 

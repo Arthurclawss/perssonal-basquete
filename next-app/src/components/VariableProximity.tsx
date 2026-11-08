@@ -31,8 +31,11 @@ export default function VariableProximity({
 
     const render = () => {
       frame = null;
-      letterRefs.current.forEach((letter) => {
-        if (!letter) return;
+      const letters = letterRefs.current.filter(
+        (letter): letter is HTMLSpanElement => letter !== null,
+      );
+      // 1) Lê todas as posições de uma vez (sem intercalar com escritas → sem reflow forçado)
+      const weights = letters.map((letter) => {
         const rect = letter.getBoundingClientRect();
         const distance = Math.hypot(
           pointerRef.current.x - (rect.left + rect.width / 2),
@@ -40,8 +43,11 @@ export default function VariableProximity({
         );
         const proximity = Math.max(0, 1 - distance / radius);
         const eased = 1 - Math.pow(1 - proximity, 3);
-        const weight = fromWeight + (toWeight - fromWeight) * eased;
-        letter.style.fontVariationSettings = `'wght' ${Math.round(weight)}`;
+        return Math.round(fromWeight + (toWeight - fromWeight) * eased);
+      });
+      // 2) Depois aplica os estilos
+      letters.forEach((letter, index) => {
+        letter.style.fontVariationSettings = `'wght' ${weights[index]}`;
       });
     };
 

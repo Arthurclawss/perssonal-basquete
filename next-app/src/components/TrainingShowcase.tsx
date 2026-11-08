@@ -1,58 +1,182 @@
+"use client";
+
+import Image from "next/image";
+import { useState, useRef, useEffect } from "react";
 import TrainingVideo from "./TrainingVideo";
 
 const videos = [
   {
-    src: "/assets/training-03.mp4?v=2",
+    src: "/assets/training-03-web.mp4?v=3",
     poster: "/assets/training-03-poster.png",
     eyebrow: "Resultado real",
     title: "Recorde pessoal e uma base mais forte",
-    className: "training-card-featured",
   },
   {
-    src: "/assets/training-01.mp4?v=2",
+    src: "/assets/training-01-web.mp4?v=3",
     poster: "/assets/training-01-poster.png",
     eyebrow: "Agilidade",
     title: "Resposta rápida em cada direção",
-    className: "training-card-secondary",
   },
   {
-    src: "/assets/training-02.mp4?v=2",
+    src: "/assets/training-02-web.mp4?v=3",
     poster: "/assets/training-02-poster.png",
     eyebrow: "Preparação física",
     title: "Preparando o atleta para a temporada",
-    className: "training-card-tertiary",
   },
 ];
 
 export default function TrainingShowcase() {
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [direction, setDirection] = useState<"next" | "prev">("next");
+  const [idlePulse, setIdlePulse] = useState(false);
+  const idleTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const activeVideo = videos[activeIndex];
+  const prevIndex = (activeIndex - 1 + videos.length) % videos.length;
+  const nextIndex = (activeIndex + 1) % videos.length;
+
+  useEffect(() => {
+    if (idleTimerRef.current) clearTimeout(idleTimerRef.current);
+    idleTimerRef.current = setTimeout(() => setIdlePulse(true), 3500);
+    return () => {
+      if (idleTimerRef.current) clearTimeout(idleTimerRef.current);
+    };
+  }, [activeIndex]);
+
+  const showPrevious = () => {
+    setIdlePulse(false);
+    setDirection("prev");
+    setActiveIndex((current) => (current - 1 + videos.length) % videos.length);
+  };
+
+  const showNext = () => {
+    setIdlePulse(false);
+    setDirection("next");
+    setActiveIndex((current) => (current + 1) % videos.length);
+  };
+
+  const goToIndex = (index: number) => {
+    if (index === activeIndex) return;
+    setIdlePulse(false);
+    setDirection(index > activeIndex ? "next" : "prev");
+    setActiveIndex(index);
+  };
+
   return (
-    <div data-training-grid className="training-mosaic">
-      {videos.map((video, index) => (
-        <article
-          key={video.src}
-          data-training-card
-          className={`testimonial-video-card group relative overflow-hidden border border-white/15 bg-brand-dark ${video.className}`}
+    <div data-training-grid className="training-carousel">
+      <div className="training-carousel__heading">
+        <span data-training-heading-detail className="training-carousel__heading-line" aria-hidden="true" />
+        <h2>
+          <span data-training-heading-primary>Evolução</span>
+          <span data-training-heading-detail className="training-carousel__heading-accent"> em movimento</span>
+        </h2>
+        <span data-training-heading-detail className="training-carousel__heading-line" aria-hidden="true" />
+      </div>
+
+      <div className="training-carousel__stage">
+        {/* Glow behind active card */}
+        <div data-training-control className="training-carousel__glow" aria-hidden="true" />
+
+        <button
+          type="button"
+          data-training-control
+          onClick={showPrevious}
+          className={`training-carousel__arrow training-carousel__arrow--previous${idlePulse ? " training-carousel__arrow--pulse" : ""}`}
+          aria-label="Ver vídeo anterior"
         >
-          <TrainingVideo
-            src={video.src}
-            poster={video.poster}
-            label={`${video.eyebrow}: ${video.title}`}
-            className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.035]"
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M20 12H5m6-6-6 6 6 6" />
+          </svg>
+        </button>
+
+        {/* Previous ghost card */}
+        <button
+          type="button"
+          data-training-control
+          className="training-carousel__ghost training-carousel__ghost--prev"
+          onClick={showPrevious}
+          aria-label={`Ver: ${videos[prevIndex].title}`}
+          tabIndex={-1}
+        >
+          <Image
+            src={videos[prevIndex].poster}
+            alt=""
+            fill
+            sizes="14vw"
+            className="training-carousel__ghost-img"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black via-black/10 to-black/20" />
-          <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-5 p-6 sm:p-8">
-            <div>
-              <p className="text-[0.6rem] font-black uppercase tracking-[0.22em] text-brand-red">{video.eyebrow}</p>
-              <h3 className={`mt-2 max-w-xl font-heading font-black uppercase leading-[0.92] tracking-[-0.04em] text-white ${index === 0 ? "text-3xl sm:text-5xl" : "text-2xl sm:text-3xl"}`}>
-                {video.title}
-              </h3>
+        </button>
+
+        <div data-training-card className="training-carousel__card-shell">
+          <article
+            key={activeVideo.src}
+            data-direction={direction}
+            className="testimonial-video-card training-carousel__card group relative overflow-hidden border border-white/15 bg-brand-dark"
+          >
+            <TrainingVideo
+              src={activeVideo.src}
+              poster={activeVideo.poster}
+              label={`${activeVideo.eyebrow}: ${activeVideo.title}`}
+              className="absolute inset-0 h-full w-full object-cover"
+            />
+
+            {/* Video info overlay */}
+            <div className="training-carousel__info">
+              <span className="training-carousel__info-eyebrow">
+                {activeVideo.eyebrow}
+              </span>
+              <p className="training-carousel__info-title">
+                {activeVideo.title}
+              </p>
             </div>
-            <span className="shrink-0 border border-white/25 px-3 py-2 text-[0.55rem] font-black uppercase tracking-[0.16em] text-white/65">
-              Em movimento
-            </span>
-          </div>
-        </article>
-      ))}
+          </article>
+        </div>
+
+        {/* Next ghost card */}
+        <button
+          type="button"
+          data-training-control
+          className="training-carousel__ghost training-carousel__ghost--next"
+          onClick={showNext}
+          aria-label={`Ver: ${videos[nextIndex].title}`}
+          tabIndex={-1}
+        >
+          <Image
+            src={videos[nextIndex].poster}
+            alt=""
+            fill
+            sizes="14vw"
+            className="training-carousel__ghost-img"
+          />
+        </button>
+
+        <button
+          type="button"
+          data-training-control
+          onClick={showNext}
+          className={`training-carousel__arrow training-carousel__arrow--next${idlePulse ? " training-carousel__arrow--pulse" : ""}`}
+          aria-label="Ver próximo vídeo"
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M4 12h15m-6-6 6 6-6 6" />
+          </svg>
+        </button>
+      </div>
+
+      {/* Progress indicators */}
+      <div data-training-control className="training-carousel__indicators" role="tablist" aria-label="Selecionar vídeo">
+        {videos.map((video, index) => (
+          <button
+            key={video.src}
+            type="button"
+            role="tab"
+            aria-selected={index === activeIndex}
+            aria-label={`Vídeo ${index + 1}: ${video.eyebrow}`}
+            className={`training-carousel__indicator${index === activeIndex ? " training-carousel__indicator--active" : ""}`}
+            onClick={() => goToIndex(index)}
+          />
+        ))}
+      </div>
     </div>
   );
 }

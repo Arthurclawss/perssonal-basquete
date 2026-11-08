@@ -27,9 +27,10 @@ export default function TiltCard({
     
     cardRef.current.style.setProperty("--rx", `${rotateX}deg`);
     cardRef.current.style.setProperty("--ry", `${rotateY}deg`);
-    cardRef.current.style.setProperty("--scale", `1.05`);
-    // Quando está movendo, não há transição para não engasgar
-    cardRef.current.style.setProperty("--duration", `0ms`);
+    cardRef.current.style.setProperty("--scale", `1.03`);
+    // Transição muito rápida para seguir o mouse suavemente
+    cardRef.current.style.setProperty("--duration", `0.1s`);
+    cardRef.current.style.setProperty("--ease", `ease-out`);
   };
 
   const handleMouseLeave = () => {
@@ -37,8 +38,9 @@ export default function TiltCard({
     cardRef.current.style.setProperty("--rx", `0deg`);
     cardRef.current.style.setProperty("--ry", `0deg`);
     cardRef.current.style.setProperty("--scale", `1`);
-    // Retorno suave quando solta
-    cardRef.current.style.setProperty("--duration", `500ms`);
+    // Retorno suave tipo mola quando o mouse sai
+    cardRef.current.style.setProperty("--duration", `0.6s`);
+    cardRef.current.style.setProperty("--ease", `cubic-bezier(0.23, 1, 0.32, 1)`);
   };
 
   return (
@@ -49,7 +51,7 @@ export default function TiltCard({
       className={className}
       style={{
         transform: "perspective(1000px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) scale(var(--scale, 1))",
-        transition: "transform var(--duration, 500ms) cubic-bezier(0.23, 1, 0.32, 1)",
+        transition: "transform var(--duration, 0.6s) var(--ease, cubic-bezier(0.23, 1, 0.32, 1))",
         transformStyle: "preserve-3d",
         willChange: "transform",
       }}
