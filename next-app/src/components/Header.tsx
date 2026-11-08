@@ -66,7 +66,7 @@ export default function Header() {
           : "border-transparent bg-transparent"
       }`}
     >
-      <div className="mx-auto flex h-20 max-w-[1600px] items-center justify-between px-5 sm:px-8 lg:h-20 lg:px-8">
+      <div className="mx-auto flex h-16 max-w-[1600px] items-center justify-between px-5 sm:px-8 lg:h-20 lg:px-8">
         <a
           href="#inicio"
           className="group flex items-center gap-3"
@@ -115,7 +115,7 @@ export default function Header() {
         id="mobile-navigation"
         inert={!menuOpen}
         data-lenis-prevent
-        className={`absolute inset-x-0 top-20 h-[calc(100dvh-5rem)] overflow-y-auto overscroll-contain border-t border-white/10 bg-brand-black px-5 transition-all duration-300 lg:hidden ${
+        className={`absolute inset-x-0 top-16 h-[calc(100dvh-4rem)] overflow-y-auto overscroll-contain border-t border-white/10 bg-brand-black px-5 transition-all duration-300 lg:top-20 lg:h-[calc(100dvh-5rem)] lg:hidden ${
           menuOpen
             ? "pointer-events-auto translate-y-0 opacity-100"
             : "pointer-events-none -translate-y-4 opacity-0"

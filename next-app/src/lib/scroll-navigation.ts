@@ -32,9 +32,19 @@ export function getScrollDestination(hash: string) {
   if (trigger && timeline && scene && timeline.labels[scene] !== undefined) {
     return trigger.start + (timeline.labels[scene] / timeline.duration()) * (trigger.end - trigger.start);
   }
-  const target = document.getElementById(hash.slice(1));
+
+  const sceneSelectorMap: Record<string, string> = {
+    "#inicio": "#inicio",
+    "#resultados": "[data-results-scene]",
+    "#campeonatos": "[data-gallery-scene]",
+    "#sobre": "[data-about-scene]",
+    "#treinos": "[data-training-scene]",
+    "#depoimentos": "[data-feedback-scene]",
+    "#contato": "#contato",
+  };
+
+  const target = (sceneSelectorMap[hash] ? document.querySelector(sceneSelectorMap[hash]) : document.getElementById(hash.slice(1))) as HTMLElement | null;
   if (!target) return null;
-  if (hash === "#contato" || hash === "#inicio") return target.getBoundingClientRect().top + window.scrollY;
-  // Markers in the reduced-motion layout already point into its visible scenes.
-  return target.getBoundingClientRect().top + window.scrollY;
+  const headerOffset = typeof window !== "undefined" && window.innerWidth < 768 ? 64 : 0;
+  return Math.max(0, target.getBoundingClientRect().top + window.scrollY - headerOffset);
 }

@@ -19,6 +19,8 @@ import TiltCard from "./TiltCard";
 import { syncSceneAnchors } from "@/lib/scroll-navigation";
 import { getOpeningPhase } from "@/lib/opening";
 
+import { resultStats, campGalleryItems } from "@/lib/site-content";
+
 const instagramUrl = "https://www.instagram.com/coachrafaelmelo/";
 
 const ExperienceMark = ({ className = "" }: { className?: string }) => (
@@ -54,69 +56,8 @@ const ObjectiveMark = ({ className = "" }: { className?: string }) => (
   </svg>
 );
 
-const resultStats = [
-  {
-    number: "01",
-    value: "10+",
-    title: "Anos de experiência",
-    description: "Uma década transformando treino em performance.",
-    icon: ExperienceMark,
-  },
-  {
-    number: "02",
-    value: "500+",
-    title: "Atletas desenvolvidos",
-    description: "Diferentes níveis. O mesmo compromisso com a evolução.",
-    icon: AthletesMark,
-  },
-  {
-    number: "03",
-    value: "Vários",
-    title: "Títulos estaduais",
-    description: "Trabalho que já se transformou em conquista.",
-    icon: TitlesMark,
-  },
-  {
-    number: "04",
-    value: "01",
-    title: "Objetivo",
-    description: "Elevar o nível de cada atleta que entra em quadra.",
-    icon: ObjectiveMark,
-  },
-];
-
-const campGalleryItems = [
-  {
-    src: "/assets/camps/camp-01.jpg",
-    label: "Copa nordeste 2026",
-    alt: "Equipe de basquete reunida com medalhas e troféus",
-    objectPosition: "50% 54%",
-  },
-  {
-    src: "/assets/camps/camp-02.jpeg",
-    label: "Fase nordeste de seleções 2023",
-    alt: "Equipe de basquete de uniforme verde reunida com medalhas",
-    objectPosition: "50% 70%",
-  },
-  {
-    src: "/assets/camps/camp-03.jpg",
-    label: "Estadual 2024",
-    alt: "Equipe de basquete alinhada na quadra com medalhas",
-    objectPosition: "50% 50%",
-  },
-  {
-    src: "/assets/camps/camp-04.jpg",
-    label: "Fase nordeste de seleções 2024",
-    alt: "Equipe de basquete reunida diante do painel da competição",
-    objectPosition: "50% 44%",
-  },
-  {
-    src: "/assets/camps/camp-05.jpg",
-    label: "Fase nordeste de seleções 2024",
-    alt: "Grupo de atletas e comissão técnica reunidos na quadra",
-    objectPosition: "50% 48%",
-  },
-];
+const statIcons = [ExperienceMark, AthletesMark, TitlesMark, ObjectiveMark];
+const desktopStats = resultStats.map((stat, index) => ({ ...stat, icon: statIcons[index] }));
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -149,7 +90,7 @@ export default function Hero() {
     () => {
       const media = gsap.matchMedia();
 
-      media.add("(prefers-reduced-motion: no-preference)", () => {
+      media.add("(min-width: 768px) and (prefers-reduced-motion: no-preference)", () => {
         const blurSegments = contentRef.current?.querySelectorAll("[data-blur-segment]") ?? [];
         const interfaceElements = contentRef.current?.querySelectorAll("[data-hero-ui]") ?? [];
         const transitionBlurSegments =
@@ -607,7 +548,7 @@ export default function Hero() {
         return () => window.removeEventListener("site-opening", onOpening);
       });
 
-      media.add("(prefers-reduced-motion: reduce)", () => {
+      media.add("(min-width: 768px) and (prefers-reduced-motion: reduce)", () => {
         const blurSegments = contentRef.current?.querySelectorAll("[data-blur-segment]") ?? [];
         const interfaceElements = contentRef.current?.querySelectorAll("[data-hero-ui]") ?? [];
         const transitionBlurSegments =
@@ -822,6 +763,95 @@ export default function Hero() {
         };
       });
 
+      // ─────────────────────────────────────────────────────────────
+      // Contexto Mobile (< 768px): Fluxo Natural (Opção A)
+      // Rolagem nativa sem pinning. Revelações suaves por seção.
+      // ─────────────────────────────────────────────────────────────
+      media.add("(max-width: 767px)", () => {
+        const blurSegments = contentRef.current?.querySelectorAll("[data-blur-segment]") ?? [];
+        const interfaceElements = contentRef.current?.querySelectorAll("[data-hero-ui]") ?? [];
+        const frame = contentRef.current?.querySelector("[data-hero-frame]");
+
+        gsap.set([textureRef.current, vignetteRef.current], { autoAlpha: 1 });
+        gsap.set(blurSegments, { filter: "blur(0px)", opacity: 1, y: 0 });
+        gsap.set(interfaceElements, { opacity: 1, y: 0 });
+        if (frame) gsap.set(frame, { borderColor: "rgba(255,255,255,0.2)" });
+
+        // Estado inicial de visibilidade limpa para os componentes em fluxo normal
+        gsap.set(
+          [
+            methodRef.current,
+            transitionOverlayRef.current,
+            transitionContentRef.current,
+            testimonialsIntroRef.current,
+            trainingSceneRef.current,
+            feedbackSceneRef.current,
+          ],
+          { autoAlpha: 1, clearProps: "transform,filter" }
+        );
+
+        // Cards de estatísticas de resultado
+        const statsCards = methodRef.current?.querySelectorAll("[data-result-stat]") ?? [];
+        gsap.set(statsCards, { autoAlpha: 1, y: 0, scale: 1, filter: "none", clearProps: "transform,filter" });
+        gsap.set(methodRef.current?.querySelectorAll("[data-fold-piece]") ?? [], { opacity: 1, rotateX: 0, "--fold-crease": 0 });
+        gsap.set(methodRef.current?.querySelectorAll("[data-method-subtitle]") ?? [], { autoAlpha: 1, y: 0, filter: "none" });
+
+        // Galeria e Sobre Mim
+        const galleryPanels = transitionGallerySceneRef.current?.querySelectorAll("[data-gallery-split-panel]") ?? [];
+        gsap.set(galleryPanels, { opacity: 1, clipPath: "none", clearProps: "transform" });
+        gsap.set(testimonialsIntroRef.current?.querySelectorAll("[data-intro-copy]") ?? [], { autoAlpha: 1, clearProps: "transform,clipPath" });
+        gsap.set(testimonialsIntroRef.current?.querySelectorAll("[data-masked-heading-word]") ?? [], { autoAlpha: 1, y: 0, filter: "none", clearProps: "transform" });
+        gsap.set(testimonialsIntroRef.current?.querySelectorAll("[data-fold-piece]") ?? [], { opacity: 1, rotateX: 0, "--fold-crease": 0 });
+        gsap.set(testimonialsIntroRef.current?.querySelectorAll("[data-intro-detail]") ?? [], { autoAlpha: 1, y: 0, filter: "none" });
+        gsap.set(testimonialsIntroRef.current?.querySelectorAll("[data-about-pillar]") ?? [], { autoAlpha: 1, y: 0, clipPath: "none" });
+
+        // Vídeos de treino
+        const trainingCards = trainingSceneRef.current?.querySelectorAll("[data-training-card]") ?? [];
+        const trainingControls = trainingSceneRef.current?.querySelectorAll("[data-training-control]") ?? [];
+        gsap.set(trainingCards, { autoAlpha: 1, y: 0, scale: 1, clearProps: "transform" });
+        gsap.set(trainingControls, { autoAlpha: 1, clearProps: "transform" });
+
+        // Feedbacks
+        const feedbackCards = feedbackSceneRef.current?.querySelectorAll("[data-feedback-card]") ?? [];
+        const feedbackLanes = feedbackSceneRef.current?.querySelectorAll("[data-feedback-lane]") ?? [];
+        const feedbackWords = feedbackSceneRef.current?.querySelectorAll("[data-feedback-heading] [data-cinematic-word]") ?? [];
+        gsap.set(feedbackCards, { autoAlpha: 1, y: 0, scale: 1, clearProps: "transform" });
+        gsap.set(feedbackLanes, { autoAlpha: 1, y: 0, clearProps: "transform" });
+        gsap.set(feedbackWords, { autoAlpha: 1, y: 0, yPercent: 0, clearProps: "transform" });
+        gsap.set(feedbackSceneRef.current?.querySelectorAll("[data-feedback-copy]") ?? [], { autoAlpha: 1, y: 0, filter: "none", clearProps: "transform" });
+
+        // Revelações suaves baseadas em entrada na viewport (sem cálculos a cada frame de scroll)
+        const revealTargets = [
+          methodRef.current,
+          transitionContentRef.current,
+          testimonialsIntroRef.current,
+          trainingSceneRef.current,
+          feedbackSceneRef.current,
+        ];
+
+        const triggers: ScrollTrigger[] = [];
+        revealTargets.forEach((target) => {
+          if (!target) return;
+          const st = ScrollTrigger.create({
+            trigger: target,
+            start: "top 92%",
+            once: true,
+            onEnter: () => {
+              gsap.fromTo(
+                target,
+                { autoAlpha: 0, y: 22 },
+                { autoAlpha: 1, y: 0, duration: 0.65, ease: "power2.out", clearProps: "transform" }
+              );
+            },
+          });
+          triggers.push(st);
+        });
+
+        return () => {
+          triggers.forEach((st) => st.kill());
+        };
+      });
+
       return () => media.revert();
     },
     { scope: sectionRef },
@@ -839,26 +869,26 @@ export default function Hero() {
       <span id="treinos" className="pointer-events-none absolute top-[90%]" aria-hidden="true" />
       <span id="depoimentos" className="pointer-events-none absolute top-[94%]" aria-hidden="true" />
       <div className="sticky top-0 flex h-[100svh] items-center overflow-hidden pb-16 pt-28 lg:pb-20 lg:pt-32">
-      <div ref={logoRef} className="hero-logo-backdrop pointer-events-none absolute inset-0 z-[1]" aria-hidden="true">
-        <Image
-          src="/assets/hoop-master-logo.png"
-          data-opening-asset="logo"
-          alt=""
-          fill
-          preload
-          sizes="100vw"
-          className="object-contain px-[3vw] py-28 sm:px-[10vw] sm:py-20 lg:px-[16vw]"
-        />
-      </div>
-      <div ref={logoLightRef} className="hero-logo-light pointer-events-none absolute inset-0 z-0" aria-hidden="true">
-        <div className="hero-logo-light-core" />
-      </div>
-      <div ref={textureRef} className="absolute inset-0 z-[2] opacity-0 mix-blend-screen">
-        <DotField />
-      </div>
-      <div ref={vignetteRef} className="hero-dot-vignette pointer-events-none absolute inset-0 z-[3] opacity-0" />
+        <div ref={logoRef} className="hero-logo-backdrop pointer-events-none absolute inset-0 z-[1]" aria-hidden="true">
+          <Image
+            src="/assets/hoop-master-logo.png"
+            data-opening-asset="logo"
+            alt=""
+            fill
+            preload
+            sizes="100vw"
+            className="object-contain px-[3vw] py-28 sm:px-[10vw] sm:py-20 lg:px-[16vw]"
+          />
+        </div>
+        <div ref={logoLightRef} className="hero-logo-light pointer-events-none absolute inset-0 z-0" aria-hidden="true">
+          <div className="hero-logo-light-core" />
+        </div>
+        <div ref={textureRef} className="absolute inset-0 z-[2] opacity-0 mix-blend-screen">
+          <DotField />
+        </div>
+        <div ref={vignetteRef} className="hero-dot-vignette pointer-events-none absolute inset-0 z-[3] opacity-0" />
 
-      <div ref={currentSceneRef} className="relative z-10 mx-auto grid w-full max-w-[1440px] items-center gap-10 px-5 sm:px-8 lg:grid-cols-[1.08fr_0.92fr] lg:px-12">
+      <div ref={currentSceneRef} data-hero-scene className="relative z-10 mx-auto grid w-full max-w-[1440px] items-center gap-10 px-5 sm:px-8 lg:grid-cols-[1.08fr_0.92fr] lg:px-12">
         <div ref={contentRef} className="relative z-20 max-w-4xl pt-6 lg:pt-0">
           <div data-hero-ui className="mb-7 flex translate-y-6 items-center gap-4 opacity-0">
             <span className="h-px w-10 bg-brand-red" />
@@ -867,194 +897,195 @@ export default function Hero() {
             </p>
           </div>
 
-          <h1 className="max-w-4xl font-heading text-[clamp(2.9rem,13vw,3.35rem)] font-black uppercase leading-[0.82] tracking-[-0.06em] text-white sm:text-[clamp(3.7rem,8.3vw,8.5rem)] sm:leading-[0.79] sm:tracking-[-0.065em]">
-            <BlurText text="Treine." controlled />
-            <br />
-            <span className="text-brand-red">
-              <BlurText text="Evolua." controlled />
-            </span>
-            <br />
-            <span className="outline-text">
-              <BlurText text="Domine." controlled />
-            </span>
-          </h1>
+            <h1 className="max-w-4xl font-heading text-[clamp(2.9rem,13vw,3.35rem)] font-black uppercase leading-[0.82] tracking-[-0.06em] text-white sm:text-[clamp(3.7rem,8.3vw,8.5rem)] sm:leading-[0.79] sm:tracking-[-0.065em]">
+              <BlurText text="Treine." controlled />
+              <br />
+              <span className="text-brand-red">
+                <BlurText text="Evolua." controlled />
+              </span>
+              <br />
+              <span className="outline-text">
+                <BlurText text="Domine." controlled />
+              </span>
+            </h1>
 
-          <div data-hero-frame className="mt-9 grid max-w-2xl gap-7 border-l border-transparent pl-5 sm:grid-cols-[1fr_auto] sm:items-end sm:pl-7">
-            <p className="max-w-md text-sm leading-6 text-white/65 sm:text-base sm:leading-7">
-              <BlurText
-                text="Treino de alta performance para transformar fundamento em resultado."
-                controlled
-              />
-            </p>
-            <div data-hero-ui className="flex translate-y-6 flex-wrap gap-3 opacity-0">
-              <a
-                href={instagramUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group inline-flex items-center gap-4 bg-brand-red px-5 py-4 text-[0.68rem] font-black uppercase tracking-[0.15em] text-white transition-colors hover:bg-brand-redDark"
-              >
-                <ShinyText text="Quero elevar meu jogo" speed={3.8} />
-                <ArrowUpRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-              </a>
-            </div>
-          </div>
-        </div>
-
-        <div className="relative hidden lg:block">
-          <div ref={photoGlowRef} className="hero-photo-glow pointer-events-none absolute -inset-10 opacity-0" />
-          <div
-            ref={photoRef}
-            className="hero-photo-frame relative ml-auto aspect-[4/5] max-h-[72svh] w-full max-w-[31rem] overflow-hidden opacity-0"
-          >
-            <Image
-              src="/assets/coach-2.jpg"
-              data-opening-asset="coach"
-              loading="eager"
-              alt="Coach Rafael Melo à beira da quadra"
-              fill
-              sizes="(max-width: 1024px) 0px, 42vw"
-              className="scale-[1.06] object-cover object-[48%_20%]"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-brand-black via-transparent to-black/10" />
-            <div className="absolute inset-0 bg-brand-red/10 mix-blend-color" />
-            <div className="absolute bottom-7 left-7 right-7 flex items-end justify-between border-t border-white/35 pt-4">
-              <div>
-                <p className="text-[0.6rem] font-bold uppercase tracking-[0.22em] text-white/60">Coach</p>
-                <p className="mt-1 font-heading text-xl font-black uppercase tracking-tight text-white">Rafael Melo</p>
-              </div>
-              <ShinyText
-                text="Performance"
-                color="rgba(255,255,255,0.55)"
-                shineColor="#ffffff"
-                className="text-[0.58rem] font-bold uppercase tracking-[0.18em]"
-                speed={4.8}
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div
-        ref={methodRef}
-        data-results-scene
-        className="invisible absolute inset-0 z-20 flex items-center px-5 opacity-0 sm:px-8 lg:px-12"
-      >
-        <div className="mx-auto w-full max-w-[1440px]">
-          <div className="flex flex-col gap-5 border-b border-white/10 pb-8 mb-8 lg:pb-12 lg:mb-12">
-            <div className="order-2 mt-2">
-
-              <p
-                data-method-subtitle
-                className="max-w-xl text-base sm:text-lg font-medium leading-relaxed text-white/60"
-              >
-                Não é promessa. É evolução construída atleta por atleta.
+            <div data-hero-frame className="mt-9 grid max-w-2xl gap-7 border-l border-transparent pl-5 sm:grid-cols-[1fr_auto] sm:items-end sm:pl-7">
+              <p className="max-w-md text-sm leading-6 text-white/65 sm:text-base sm:leading-7">
+                <BlurText
+                  text="Treino de alta performance para transformar fundamento em resultado."
+                  controlled
+                />
               </p>
-            </div>
-            <h2 className="order-1 font-heading text-[clamp(2.55rem,5.55vw,6rem)] font-black uppercase leading-[0.86] tracking-[-0.055em] text-white">
-              <FoldText
-                lines={["Formando atletas", "Construindo legados"]}
-                lineClassNames={["text-white", "text-brand-red"]}
-              />
-            </h2>
-          </div>
-
-          <div className="result-metrics-grid grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-            {resultStats.map((stat) => {
-              const Icon = stat.icon;
-              return (
-                <TiltCard key={stat.number} className="h-full w-full">
-                  <article
-                    data-result-stat
-                    className="result-metric-card group w-full h-full"
-                  >
-                    <div className="result-metric-card__header">
-                      <span className="result-metric-card__icon-wrap">
-                        <Icon className="result-metric-card__icon" />
-                      </span>
-                  </div>
-                  <div className="result-metric-card__rule" aria-hidden="true"><span /></div>
-                  <p className="result-metric-card__value">
-                    <VariableProximity
-                      label={stat.value}
-                      containerRef={methodRef}
-                      fromWeight={620}
-                      toWeight={900}
-                      radius={150}
-                    />
-                  </p>
-                  <h3 className="result-metric-card__title">
-                    {stat.title}
-                  </h3>
-                  <p className="result-metric-card__description">{stat.description}</p>
-                  </article>
-                </TiltCard>
-              );
-            })}
-          </div>
-        </div>
-      </div>
-
-      <div
-        ref={transitionLineRef}
-        className="invisible absolute left-0 top-1/2 z-[35] h-[2px] w-full origin-center bg-brand-red opacity-0 shadow-[0_0_28px_rgba(255,26,26,0.82)]"
-        aria-hidden="true"
-      />
-
-      <div
-        ref={transitionPanelRef}
-        className="transition-screen invisible absolute inset-0 z-30 bg-brand-red opacity-0"
-        style={{ transform: "scale(0, 0.002)", transformOrigin: "50% 50%" }}
-        aria-hidden="true"
-      />
-
-      <div ref={transitionOverlayRef} className="invisible absolute inset-0 z-[31] overflow-hidden opacity-0">
-        <div ref={transitionTrackRef} className="flex h-full w-[200vw] will-change-transform">
-          <div
-            ref={transitionGallerySceneRef}
-            className="relative h-full w-screen shrink-0 overflow-hidden bg-brand-red"
-          >
-
-
-            <div ref={transitionLogoRef} className="pointer-events-none absolute inset-0 opacity-0" aria-hidden="true">
-              <Image
-                src="/assets/hoop-master-logo.png"
-                alt=""
-                fill
-                sizes="100vw"
-                className="object-contain p-[10vw] brightness-0 invert"
-              />
-            </div>
-            <div className="transition-screen-grid pointer-events-none absolute inset-0" aria-hidden="true" />
-
-            <div ref={transitionContentRef} className="relative z-10 flex h-full items-center px-5 py-8 opacity-0 sm:px-8 sm:py-10 lg:px-12 lg:py-12">
-              <div className="mx-auto w-full max-w-[1440px]">
-                <h2
-                  data-transition-blur
-                  className="mb-5 max-w-[15ch] font-heading text-[clamp(2.15rem,4.7vw,5rem)] font-black uppercase leading-[0.84] tracking-[-0.06em] text-white sm:mb-7"
+              <div data-hero-ui className="flex translate-y-6 flex-wrap gap-3 opacity-0">
+                <a
+                  href={instagramUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group inline-flex items-center gap-4 bg-brand-red px-5 py-4 text-[0.68rem] font-black uppercase tracking-[0.15em] text-white transition-colors hover:bg-brand-redDark"
                 >
-                  <BlurText text="O treino" controlled />{" "}
-                  <BlurText text="aparece" controlled className="text-brand-black" />{" "}
-                  <BlurText text="no jogo" controlled className="text-brand-black" />
-                </h2>
+                  <ShinyText text="Quero elevar meu jogo" speed={3.8} />
+                  <ArrowUpRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                </a>
+              </div>
+            </div>
+          </div>
 
-                <AccordionGallery
-                  items={campGalleryItems}
-                  height={400}
-                  gap={12}
-                  radius={20}
-                  defaultIndex={0}
-                  expandRatio={0.52}
-                  tilt={3}
-                  parallax={0.3}
-                  accentColor="#ffffff"
-                  overlayColor="#070707"
-                  textColor="#ffffff"
+          <div className="relative hidden lg:block">
+            <div ref={photoGlowRef} className="hero-photo-glow pointer-events-none absolute -inset-10 opacity-0" />
+            <div
+              ref={photoRef}
+              className="hero-photo-frame relative ml-auto aspect-[4/5] max-h-[72svh] w-full max-w-[31rem] overflow-hidden opacity-0"
+            >
+              <Image
+                src="/assets/coach-2.jpg"
+                data-opening-asset="coach"
+                loading="eager"
+                alt="Coach Rafael Melo à beira da quadra"
+                fill
+                sizes="(max-width: 1024px) 0px, 42vw"
+                className="scale-[1.06] object-cover object-[48%_20%]"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-brand-black via-transparent to-black/10" />
+              <div className="absolute inset-0 bg-brand-red/10 mix-blend-color" />
+              <div className="absolute bottom-7 left-7 right-7 flex items-end justify-between border-t border-white/35 pt-4">
+                <div>
+                  <p className="text-[0.6rem] font-bold uppercase tracking-[0.22em] text-white/60">Coach</p>
+                  <p className="mt-1 font-heading text-xl font-black uppercase tracking-tight text-white">Rafael Melo</p>
+                </div>
+                <ShinyText
+                  text="Performance"
+                  color="rgba(255,255,255,0.55)"
+                  shineColor="#ffffff"
+                  className="text-[0.58rem] font-bold uppercase tracking-[0.18em]"
+                  speed={4.8}
                 />
               </div>
             </div>
           </div>
+        </div>
 
-          <div className="about-red-stage relative h-full w-screen shrink-0 overflow-hidden">
+        <div
+          ref={methodRef}
+          data-results-scene
+          className="invisible absolute inset-0 z-20 flex items-center px-5 opacity-0 sm:px-8 lg:px-12"
+        >
+          <div className="mx-auto w-full max-w-[1440px]">
+            <div className="flex flex-col gap-5 border-b border-white/10 pb-8 mb-8 lg:pb-12 lg:mb-12">
+              <div className="order-2 mt-2">
+
+                <p
+                  data-method-subtitle
+                  className="max-w-xl text-base sm:text-lg font-medium leading-relaxed text-white/60"
+                >
+                  Não é promessa. É evolução construída atleta por atleta.
+                </p>
+              </div>
+              <h2 className="order-1 font-heading text-[clamp(2.55rem,5.55vw,6rem)] font-black uppercase leading-[0.86] tracking-[-0.055em] text-white">
+                <FoldText
+                  lines={["Formando atletas", "Construindo legados"]}
+                  lineClassNames={["text-white", "text-brand-red"]}
+                />
+              </h2>
+            </div>
+
+            <div className="result-metrics-grid grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+              {desktopStats.map((stat) => {
+                const Icon = stat.icon;
+                return (
+                  <TiltCard key={stat.number} className="h-full w-full">
+                    <article
+                      data-result-stat
+                      className="result-metric-card group w-full h-full"
+                    >
+                      <div className="result-metric-card__header">
+                        <span className="result-metric-card__icon-wrap">
+                          <Icon className="result-metric-card__icon" />
+                        </span>
+                      </div>
+                      <div className="result-metric-card__rule" aria-hidden="true"><span /></div>
+                      <p className="result-metric-card__value">
+                        <VariableProximity
+                          label={stat.value}
+                          containerRef={methodRef}
+                          fromWeight={620}
+                          toWeight={900}
+                          radius={150}
+                        />
+                      </p>
+                      <h3 className="result-metric-card__title">
+                        {stat.title}
+                      </h3>
+                      <p className="result-metric-card__description">{stat.description}</p>
+                    </article>
+                  </TiltCard>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+
+        <div
+          ref={transitionLineRef}
+          className="invisible absolute left-0 top-1/2 z-[35] h-[2px] w-full origin-center bg-brand-red opacity-0 shadow-[0_0_28px_rgba(255,26,26,0.82)]"
+          aria-hidden="true"
+        />
+
+        <div
+          ref={transitionPanelRef}
+          className="transition-screen invisible absolute inset-0 z-30 bg-brand-red opacity-0"
+          style={{ transform: "scale(0, 0.002)", transformOrigin: "50% 50%" }}
+          aria-hidden="true"
+        />
+
+      <div ref={transitionOverlayRef} data-story-overlay className="invisible absolute inset-0 z-[31] overflow-hidden opacity-0">
+        <div ref={transitionTrackRef} data-story-track className="flex h-full w-[200vw] will-change-transform">
+          <div
+            ref={transitionGallerySceneRef}
+            data-gallery-scene
+            className="relative h-full w-screen shrink-0 overflow-hidden bg-brand-red"
+          >
+
+
+              <div ref={transitionLogoRef} className="pointer-events-none absolute inset-0 opacity-0" aria-hidden="true">
+                <Image
+                  src="/assets/hoop-master-logo.png"
+                  alt=""
+                  fill
+                  sizes="100vw"
+                  className="object-contain p-[10vw] brightness-0 invert"
+                />
+              </div>
+              <div className="transition-screen-grid pointer-events-none absolute inset-0" aria-hidden="true" />
+
+              <div ref={transitionContentRef} className="relative z-10 flex h-full items-center px-5 py-8 opacity-0 sm:px-8 sm:py-10 lg:px-12 lg:py-12">
+                <div className="mx-auto w-full max-w-[1440px]">
+                  <h2
+                    data-transition-blur
+                    className="mb-5 max-w-[15ch] font-heading text-[clamp(2.15rem,4.7vw,5rem)] font-black uppercase leading-[0.84] tracking-[-0.06em] text-white sm:mb-7"
+                  >
+                    <BlurText text="O treino" controlled />{" "}
+                    <BlurText text="aparece" controlled className="text-brand-black" />{" "}
+                    <BlurText text="no jogo" controlled className="text-brand-black" />
+                  </h2>
+
+                  <AccordionGallery
+                    items={campGalleryItems}
+                    height={400}
+                    gap={12}
+                    radius={20}
+                    defaultIndex={0}
+                    expandRatio={0.52}
+                    tilt={3}
+                    parallax={0.3}
+                    accentColor="#ffffff"
+                    overlayColor="#070707"
+                    textColor="#ffffff"
+                  />
+                </div>
+              </div>
+            </div>
+
+          <div data-about-stage className="about-red-stage relative h-full w-screen shrink-0 overflow-hidden">
             {/* Slanted red transition from previous screen */}
             <div
               ref={aboutSideBarRef}
@@ -1090,7 +1121,7 @@ export default function Hero() {
                     </div>
                   </div>
 
-                  <div className="relative mt-5 grid items-center gap-6 sm:mt-7 lg:grid-cols-[0.72fr_1.28fr] lg:gap-14 xl:gap-20">
+                  <div className="relative mt-5 flex flex-col-reverse items-center gap-6 sm:mt-7 lg:grid lg:grid-cols-[0.72fr_1.28fr] lg:gap-14 xl:gap-20">
                     <div className="flex items-center justify-center lg:justify-start lg:translate-y-8">
                       <TiltCard className="huddle-photo-frame relative w-full max-w-[24rem] sm:w-72 lg:w-full lg:max-w-[23rem] xl:max-w-[25rem]">
                         <figure
@@ -1152,8 +1183,8 @@ export default function Hero() {
                 </div>
               </div>
 
-              <div ref={proofVerticalTrackRef} className="absolute inset-x-0 top-0 z-30 h-[200%] w-full will-change-transform">
-                <div ref={trainingSceneRef} className="invisible relative flex h-1/2 w-full items-center overflow-hidden px-5 py-8 opacity-0 sm:px-8 lg:px-12 lg:py-10">
+              <div ref={proofVerticalTrackRef} data-proof-track className="absolute inset-x-0 top-0 z-30 h-[200%] w-full will-change-transform">
+                <div ref={trainingSceneRef} data-training-scene className="invisible relative flex h-1/2 w-full items-center overflow-hidden px-5 py-8 opacity-0 sm:px-8 lg:px-12 lg:py-10">
                   <div data-training-backdrop className="training-backdrop-surface pointer-events-none invisible absolute inset-0 opacity-0" aria-hidden="true">
                     <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 font-heading text-[18vw] font-black uppercase leading-none tracking-[-0.08em] text-white/[0.045]">
                       Evolução
@@ -1164,7 +1195,7 @@ export default function Hero() {
                   </div>
                 </div>
 
-                <div ref={feedbackSceneRef} className="pointer-events-none relative h-1/2 w-full overflow-hidden">
+                <div ref={feedbackSceneRef} data-feedback-scene className="pointer-events-none relative h-1/2 w-full overflow-hidden">
                   <Testimonials />
                 </div>
               </div>
@@ -1173,16 +1204,16 @@ export default function Hero() {
         </div>
       </div>
 
-      <a
-        ref={exploreRef}
-        href="#resultados"
-        className="absolute bottom-5 left-5 z-20 hidden translate-y-6 items-center gap-3 text-[0.6rem] font-bold uppercase tracking-[0.22em] text-white/40 opacity-0 transition-colors hover:text-white md:flex lg:left-12"
-      >
-        Explore
-        <span className="grid h-8 w-8 place-items-center rounded-full border border-white/20">
-          <ArrowDown className="h-3.5 w-3.5" />
-        </span>
-      </a>
+        <a
+          ref={exploreRef}
+          href="#resultados"
+          className="absolute bottom-5 left-5 z-20 hidden translate-y-6 items-center gap-3 text-[0.6rem] font-bold uppercase tracking-[0.22em] text-white/40 opacity-0 transition-colors hover:text-white md:flex lg:left-12"
+        >
+          Explore
+          <span className="grid h-8 w-8 place-items-center rounded-full border border-white/20">
+            <ArrowDown className="h-3.5 w-3.5" />
+          </span>
+        </a>
       </div>
     </section>
   );

@@ -1,20 +1,6 @@
-import Header from "@/components/Header";
-import Hero from "@/components/Hero";
-import FooterCTA from "@/components/FooterCTA";
-import WhatsAppButton from "@/components/WhatsAppButton";
-import IntroLoader from "@/components/IntroLoader";
+import ResponsiveExperience from "@/components/ResponsiveExperience";
+import SimpleExperience from "@/components/SimpleExperience";
 
 export default function Home() {
-  return (
-    <>
-      <main className="min-h-screen bg-brand-black">
-        <Header />
-        <Hero />
-      </main>
-      {/* Contato e rodapé */}
-      <FooterCTA />
-      <WhatsAppButton />
-      <IntroLoader />
-    </>
-  );
+  return <ResponsiveExperience simple={<SimpleExperience />} />;
 }

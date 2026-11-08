@@ -4,26 +4,7 @@ import Image from "next/image";
 import { useState, useRef, useEffect } from "react";
 import TrainingVideo from "./TrainingVideo";
 
-const videos = [
-  {
-    src: "/assets/training-03-web.mp4?v=3",
-    poster: "/assets/training-03-poster.png",
-    eyebrow: "Resultado real",
-    title: "Recorde pessoal e uma base mais forte",
-  },
-  {
-    src: "/assets/training-01-web.mp4?v=3",
-    poster: "/assets/training-01-poster.png",
-    eyebrow: "Agilidade",
-    title: "Resposta rápida em cada direção",
-  },
-  {
-    src: "/assets/training-02-web.mp4?v=3",
-    poster: "/assets/training-02-poster.png",
-    eyebrow: "Preparação física",
-    title: "Preparando o atleta para a temporada",
-  },
-];
+import { videos } from "@/lib/site-content";
 
 export default function TrainingShowcase() {
   const [activeIndex, setActiveIndex] = useState(0);

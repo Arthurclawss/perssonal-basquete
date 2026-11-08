@@ -14,32 +14,7 @@ type Feedback = {
   height: number;
 };
 
-const feedbacks: Feedback[] = [
-  {
-    src: "/assets/testimonial-performance-cutout.png",
-    alt: "Mensagem de WhatsApp relatando evolução de força, explosão, propriocepção e condicionamento físico",
-    width: 788,
-    height: 1049,
-  },
-  {
-    src: "/assets/testimonial-mobility-cutout.png",
-    alt: "Mensagens de WhatsApp relatando melhora de mobilidade, força, velocidade, potência e confiança",
-    width: 814,
-    height: 600,
-  },
-  {
-    src: "/assets/testimonial-3-cutout.png",
-    alt: "Feedback recebido no WhatsApp",
-    width: 777,
-    height: 616,
-  },
-  {
-    src: "/assets/testimonial-5-cutout.png",
-    alt: "Feedback recebido no WhatsApp",
-    width: 746,
-    height: 652,
-  },
-];
+import { feedbacks } from "@/lib/site-content";
 
 // Colunas equilibradas: a mais alta (depoimento longo + curto) ao lado de dois curtos.
 const feedbackColumns = [

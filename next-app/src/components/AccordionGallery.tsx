@@ -88,7 +88,7 @@ export default function AccordionGallery({
   }, []);
 
   useEffect(() => {
-    const mediaQuery = window.matchMedia("(max-width: 520px)");
+    const mediaQuery = window.matchMedia("(max-width: 767px)");
     const updateOrientation = () => setResponsiveVertical(mediaQuery.matches);
 
     updateOrientation();

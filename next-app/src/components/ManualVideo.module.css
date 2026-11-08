@@ -1,0 +1,7 @@
+.player { position: relative; margin: 0; background: #000; }
+.play { position: absolute; z-index: 1; top: 50%; left: 50%; transform: translate(-50%, -50%); display: flex; align-items: center; gap: 10px; min-height: 56px; padding: 14px 20px; border: 1px solid #fff; border-radius: 28px; background: #080808e6; color: #fff; font: inherit; font-size: 14px; font-weight: 700; cursor: pointer; }
+.play > span:first-child { font-size: 20px; }
+.play:disabled { cursor: wait; }
+.play:focus-visible { outline: 3px solid #f20d2f; outline-offset: 4px; }
+.error { position: relative; padding: 16px; color: #fff; background: #241015; font-size: 13px; line-height: 1.6; }
+.error a { display: inline-flex; align-items: center; min-height: 44px; color: #fff; text-decoration: underline !important; }

@@ -1738,3 +1738,308 @@
   background-size: 18.7px 18.7px;
   mask-image: radial-gradient(ellipse at 50% 47%, black 20%, rgba(0, 0, 0, 0.8) 52%, transparent 84%);
 }
+
+/* ═════════════════════════════════════════════════════════════════════════════
+   MOBILE ARCHITECTURE (< 768px): NATURAL DOCUMENT FLOW (OPÇÃO A)
+   Strictly isolated to max-width: 767px. Zero impact on desktop (>= 768px).
+   ═════════════════════════════════════════════════════════════════════════════ */
+@media (max-width: 767px) {
+  /* Prevent any lateral overflow */
+  html, body {
+    overflow-x: clip !important;
+  }
+
+  /* Unpin #inicio and release sticky container to normal vertical flow */
+  #inicio {
+    height: auto !important;
+    min-height: 100svh !important;
+    overflow: visible !important;
+  }
+
+  #inicio > div.sticky {
+    position: static !important;
+    height: auto !important;
+    min-height: 0 !important;
+    overflow: visible !important;
+    padding: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+  }
+
+  /* Hide transitions screens and heavy background canvases */
+  .transition-screen,
+  .hero-dot-vignette,
+  #inicio > div.sticky > div[style*="scale(0, 0.002)"],
+  #inicio > div.sticky > div[class*="transition-screen"] {
+    display: none !important;
+  }
+
+  /* ── 1. Hero Scene ── */
+  [data-hero-scene] {
+    position: relative !important;
+    min-height: 85svh !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    padding: 5.5rem 1rem 3rem !important;
+  }
+
+  .hero-logo-backdrop {
+    opacity: 0.15 !important;
+    position: absolute !important;
+    top: 3rem !important;
+    height: 65vh !important;
+    pointer-events: none !important;
+  }
+
+  /* ── 2. Resultados Scene ── */
+  [data-results-scene] {
+    position: relative !important;
+    inset: auto !important;
+    width: 100% !important;
+    height: auto !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: none !important;
+    filter: none !important;
+    pointer-events: auto !important;
+    padding: 4rem 1rem 3rem !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
+  }
+
+  .result-metrics-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 0.75rem !important;
+  }
+
+  .result-metric-card {
+    min-height: 10rem !important;
+    padding: 0.85rem !important;
+  }
+
+  /* ── 3. Transition Overlay & Track (Galeria + Sobre Mim + Treinos + Feedbacks) ── */
+  [data-story-overlay] {
+    position: static !important;
+    inset: auto !important;
+    width: 100% !important;
+    height: auto !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    overflow: visible !important;
+    pointer-events: auto !important;
+    display: flex !important;
+    flex-direction: column !important;
+  }
+
+  [data-story-track] {
+    display: flex !important;
+    flex-direction: column !important;
+    width: 100% !important;
+    height: auto !important;
+    transform: none !important;
+    will-change: auto !important;
+  }
+
+  /* ── 4. Galeria de Campeonatos ── */
+  [data-gallery-scene] {
+    position: relative !important;
+    inset: auto !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: 0 !important;
+    padding: 4rem 1rem 3.5rem !important;
+    background: #090909 !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
+  }
+
+  [data-gallery-scene] .relative.z-10 {
+    padding: 0 !important;
+  }
+
+  [data-gallery-scene] [data-transition-blur] {
+    color: #ffffff !important;
+  }
+
+  [data-gallery-scene] [data-transition-blur] .text-brand-black {
+    color: #ff1a1a !important;
+  }
+
+  .accordion-gallery {
+    flex-direction: column !important;
+    perspective: none !important;
+    height: 520px !important;
+    min-height: 520px !important;
+  }
+
+  .ag-panel-shell {
+    min-height: 48px !important;
+    transform: none !important;
+  }
+
+  .accordion-gallery .ag-panel__media {
+    width: 100% !important;
+    height: var(--ag-media-size) !important;
+  }
+
+  .ag-panel__label {
+    right: 14px !important;
+    bottom: 14px !important;
+    left: 14px !important;
+  }
+
+  /* ── 5. Sobre Mim ── */
+  [data-about-stage],
+  .about-red-stage {
+    position: static !important;
+    width: 100% !important;
+    height: auto !important;
+    overflow: visible !important;
+    display: flex !important;
+    flex-direction: column !important;
+    background: transparent !important;
+  }
+
+  .about-red-stage::after,
+  .about-red-atmosphere {
+    display: none !important;
+  }
+
+  [data-about-scene] {
+    position: relative !important;
+    inset: auto !important;
+    width: 100% !important;
+    height: auto !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: none !important;
+    pointer-events: auto !important;
+    padding: 4rem 1rem 3.5rem !important;
+    overflow: visible !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
+  }
+
+  [data-about-scene] .about-rafael-panel {
+    max-width: 100% !important;
+  }
+
+  [data-about-scene] .huddle-photo-frame {
+    max-width: 100% !important;
+    width: 100% !important;
+  }
+
+  /* ── 6. Treinos em Movimento (Vídeos) ── */
+  [data-proof-track] {
+    position: static !important;
+    inset: auto !important;
+    width: 100% !important;
+    height: auto !important;
+    transform: none !important;
+    will-change: auto !important;
+    display: flex !important;
+    flex-direction: column !important;
+  }
+
+  [data-training-scene] {
+    position: relative !important;
+    inset: auto !important;
+    width: 100% !important;
+    height: auto !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: none !important;
+    pointer-events: auto !important;
+    padding: 4rem 1rem 3.5rem !important;
+    overflow: visible !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
+  }
+
+  .training-carousel {
+    width: 100% !important;
+  }
+
+  .training-carousel__ghost {
+    display: none !important;
+  }
+
+  .training-carousel__stage {
+    min-height: 0 !important;
+    padding-inline: 0 !important;
+  }
+
+  .training-carousel__card-shell {
+    width: min(88vw, 21rem) !important;
+    height: auto !important;
+    aspect-ratio: 9 / 16 !important;
+    max-height: 60svh !important;
+  }
+
+  .training-carousel__arrow {
+    width: 2.75rem !important;
+    height: 2.75rem !important;
+    top: 48% !important;
+    z-index: 20 !important;
+  }
+
+  .training-carousel__arrow--previous {
+    left: 0.25rem !important;
+  }
+
+  .training-carousel__arrow--next {
+    right: 0.25rem !important;
+  }
+
+  .training-carousel__info {
+    padding: 2.5rem 1rem 1rem !important;
+  }
+
+  .training-carousel__info-title {
+    font-size: 0.92rem !important;
+    line-height: 1.3 !important;
+  }
+
+  /* ── 7. Feedbacks / Depoimentos ── */
+  [data-feedback-scene] {
+    position: relative !important;
+    inset: auto !important;
+    width: 100% !important;
+    height: auto !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: none !important;
+    pointer-events: auto !important;
+    padding: 4rem 1rem 3.5rem !important;
+    overflow: visible !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
+  }
+
+  [data-feedback-stage] {
+    position: relative !important;
+    inset: auto !important;
+    padding: 0 !important;
+    height: auto !important;
+    overflow: visible !important;
+  }
+
+  [data-feedback-stage] > div {
+    height: auto !important;
+    display: flex !important;
+    flex-direction: column !important;
+  }
+
+  .feedback-marquee {
+    height: 520px !important;
+    margin-top: 2rem !important;
+  }
+
+  /* ── 8. Rodapé CTA final ── */
+  .final-contact {
+    height: auto !important;
+    min-height: 100svh !important;
+  }
+
+  .final-contact__layout {
+    height: auto !important;
+    padding-top: 4rem !important;
+    padding-bottom: 3rem !important;
+  }
+}
