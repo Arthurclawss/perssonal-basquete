@@ -5,7 +5,7 @@ export function getOpeningPhase(): OpeningPhase {
   if (!phase) {
     const navigation = performance.getEntriesByType("navigation")[0] as PerformanceNavigationTiming | undefined;
     const shouldPlay = !window.location.hash && window.scrollY < 8
-      && navigation?.type !== "back_forward"
+      && navigation?.type !== "back_forward" && navigation?.type !== "reload"
       && !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     phase = shouldPlay ? "loading" : "complete";
   }

@@ -309,7 +309,7 @@ export default function Hero() {
         });
         gsap.set(feedbackLanes, { autoAlpha: 0, y: 56, force3D: true });
         gsap.set(feedbackCopy, { autoAlpha: 0, y: 20, force3D: true });
-        gsap.set(feedbackWords, { autoAlpha: 0, yPercent: 115, force3D: true });
+        gsap.set(feedbackWords, { autoAlpha: 0, y: 0, yPercent: 115, force3D: true });
 
         gsap.to(logoLightRef.current?.querySelector(".hero-logo-light-core") ?? null, {
           scale: 1.1,
@@ -592,7 +592,7 @@ export default function Hero() {
             { autoAlpha: 1, y: 0, duration: 0.9, ease: "power3.out" },
             "feedbackOverlay+=0.3")
           .to(feedbackWords,
-            { autoAlpha: 1, yPercent: 0, duration: 1.2, stagger: { amount: 1.1 }, ease: "power3.out", force3D: true },
+            { autoAlpha: 1, y: 0, yPercent: 0, duration: 1.2, stagger: { amount: 1.1 }, ease: "power3.out", force3D: true },
             "feedbackOverlay+=0.5")
           .to(feedbackSubtitle,
             { autoAlpha: 1, y: 0, duration: 1, ease: "power3.out" },

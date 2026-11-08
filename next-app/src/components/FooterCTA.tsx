@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useRef } from "react";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
@@ -25,11 +26,15 @@ export default function FooterCTA() {
       const process = root.querySelector("[data-cta-process]");
       const footer = root.querySelector(".final-contact__footer");
       const glow = root.querySelector("[data-cta-glow]");
+      const brand = root.querySelector("[data-cta-brand]");
+      const mesh = root.querySelector("[data-cta-mesh]");
       const feedback = document.querySelector("[data-feedback-stage]");
       gsap.set(card, { y: 56, scale: 0.975, transformOrigin: "50% 50%", force3D: true });
-      gsap.set(words, { autoAlpha: 0, yPercent: 115, force3D: true });
+      gsap.set(words, { autoAlpha: 0, y: 0, yPercent: 115, force3D: true });
       gsap.set([kicker, description, actions, process, footer], { autoAlpha: 0, y: 20, force3D: true });
       gsap.set(glow, { opacity: 0.3, scale: 0.9 });
+      gsap.set(brand, { opacity: 0.04, scale: 0.98 });
+      gsap.set(mesh, { opacity: 0.15 });
       const entry = gsap.timeline({
         defaults: { ease: "power3.out" },
         scrollTrigger: {
@@ -42,8 +47,10 @@ export default function FooterCTA() {
       entry
         .to(card, { y: 0, scale: 1, duration: 0.9 }, 0)
         .to(glow, { opacity: 1, scale: 1, duration: 1 }, 0)
+        .to(brand, { opacity: 0.12, scale: 1, duration: 1 }, 0)
+        .to(mesh, { opacity: 0.6, duration: 1 }, 0)
         .to(kicker, { autoAlpha: 1, y: 0, duration: 0.3 }, 0.12)
-        .to(words, { autoAlpha: 1, yPercent: 0, duration: 0.45, stagger: { amount: 0.18 } }, 0.2)
+        .to(words, { autoAlpha: 1, y: 0, yPercent: 0, duration: 0.45, stagger: { amount: 0.18 } }, 0.2)
         .to(description, { autoAlpha: 1, y: 0, duration: 0.35 }, 0.4)
         .to(actions, { autoAlpha: 1, y: 0, duration: 0.35 }, 0.5)
         .to(process, { autoAlpha: 1, y: 0, duration: 0.3 }, 0.6)
@@ -65,11 +72,14 @@ export default function FooterCTA() {
         className="pointer-events-none absolute left-1/2 top-1/2 -z-10 h-[50rem] w-[50rem] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(242,13,47,0.22)_0%,rgba(242,13,47,0.06)_40%,transparent_70%)] blur-3xl"
       />
       <div
+        data-cta-brand
         aria-hidden="true"
-        className="pointer-events-none absolute inset-x-0 bottom-[-3vw] -z-10 select-none text-center font-heading text-[28vw] font-black leading-none tracking-[-0.08em] text-white/[0.02]"
+        className="pointer-events-none absolute inset-x-0 top-1/2 -z-10 mx-auto h-[78svh] w-full max-w-6xl -translate-y-1/2 select-none opacity-[0.12]"
       >
-        HM
+        <Image src="/assets/hoop-master-logo.png" alt="" fill sizes="100vw"
+          className="object-contain px-6 sm:px-12" />
       </div>
+      <div data-cta-mesh aria-hidden="true" className="final-contact__mesh pointer-events-none absolute inset-0 -z-10 opacity-60" />
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent"
@@ -129,14 +139,14 @@ export default function FooterCTA() {
             {/* Logo HM */}
             <a
               href="#inicio"
-              className="flex items-center gap-3 transition-opacity hover:opacity-80"
+              className="flex items-center gap-2 transition-opacity hover:opacity-80"
               aria-label="Voltar ao início"
             >
-              <span className="grid h-10 w-10 shrink-0 place-items-center bg-brand-red font-heading text-xs font-black tracking-[-0.08em] text-white">
-                HM
+              <span data-footer-logo className="relative block h-12 w-12 shrink-0">
+                <Image src="/assets/hoop-master-logo.png" alt="" fill sizes="48px" className="object-contain" />
               </span>
               <div className="text-left">
-                <span className="block whitespace-nowrap font-heading text-sm font-black uppercase tracking-[0.06em] text-white">
+                <span className="block whitespace-nowrap font-heading text-xs font-black uppercase tracking-[0.06em] sm:text-sm text-white">
                   Rafael Melo
                 </span>
                 <span className="mt-0.5 block text-[0.55rem] font-bold uppercase tracking-[0.22em] text-zinc-500">
