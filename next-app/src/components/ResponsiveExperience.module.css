@@ -1,0 +1,10 @@
+.simple { display: block; }
+.boot { display: none; }
+.caption { position: absolute; bottom: max(3rem, env(safe-area-inset-bottom)); left: 0; right: 0; text-align: center; color: #bdbdbd; font-size: 10px; font-weight: 700; letter-spacing: .2em; text-transform: uppercase; }
+
+/* Keep identical to DESKTOP_EXPERIENCE_QUERY in lib/experience.ts.
+   Applied to server HTML so the mobile layout cannot flash on desktop. */
+@media (min-width: 1100px) and (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .simple { display: none; }
+  .boot { display: block; position: fixed; inset: 0; z-index: 100; background: #070707; }
+}
