@@ -1,0 +1,12 @@
+.card { display: block; width: 100%; min-width: 0; padding: 16px; border: 1px solid #303030; background: #111; color: #eee; font: inherit; text-align: left; cursor: zoom-in; }
+.card img { display: block; width: 100%; height: auto; }
+.card > span { display: flex; align-items: center; justify-content: space-between; gap: 10px; min-height: 48px; margin-top: 16px; padding-top: 8px; border-top: 1px solid #333; font-size: 12px; font-weight: 600; }
+.card > span > svg { color: #ff8fa4; }
+.card:focus-visible, .close:focus-visible { outline: 2px solid #f20d2f; outline-offset: 4px; }
+.dialog { position: fixed; inset: 0; width: min(95vw, 720px); max-width: 95vw; max-height: calc(100dvh - 32px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px)); margin: auto; padding: 0 12px 12px; border: 1px solid #484848; border-radius: 16px; background: #101012; color: #fff; overflow-y: auto; overscroll-behavior: contain; box-shadow: 0 24px 80px #000b; }
+.dialog::backdrop { background: #000d; backdrop-filter: blur(8px); }
+.toolbar { position: sticky; top: 0; z-index: 1; display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 68px; padding-block: 10px; background: #101012; }
+.toolbar > span { color: #dedede; font-size: 12px; font-weight: 600; }
+.close { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; padding: 10px 12px; border: 1px solid #454545; border-radius: 10px; background: #202024; color: #fff; font: inherit; font-size: 12px; font-weight: 700; }
+.image { display: block; width: 100%; height: auto; border-radius: 8px; }
+@media (hover: hover) and (pointer: fine) { .card:hover { border-color: #666; } .close:hover { background: #3a2026; } }

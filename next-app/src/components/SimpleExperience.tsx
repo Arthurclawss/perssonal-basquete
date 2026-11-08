@@ -1,11 +1,12 @@
 import Image from "next/image";
 import { buildWhatsAppUrl, INSTAGRAM_URL } from "@/lib/contact";
-import { campGalleryItems, feedbacks, resultStats, videos } from "@/lib/site-content";
+import { campGalleryItems, resultStats, videos } from "@/lib/site-content";
 import styles from "./SimpleExperience.module.css";
 import TouchCarousel from "./TouchCarousel";
 import ManualVideo from "./ManualVideo";
 import { WhatsAppIcon } from "./WhatsAppButton";
 import SimpleHeader from "./SimpleHeader";
+import SimpleTestimonials from "./SimpleTestimonials";
 import { ArrowRight, ArrowUp, ArrowUpRight, Target, Trophy } from "lucide-react";
 
 function InstagramIcon({ size = 22 }: { size?: number }) {
@@ -98,12 +99,7 @@ export default function SimpleExperience() {
           <h2 id="simple-feedback">Quem treina <span>conta.</span></h2>
           <p className={styles.intro}>Relatos de quem vive essa evolução. Toque na imagem para abrir em tamanho maior.</p>
           <div className={styles.feedbacks}>
-          <TouchCarousel label="Depoimentos dos atletas" labels={feedbacks.map((_, index) => `Depoimento ${index + 1}`)}>
-            {feedbacks.map((feedback, index) => <a key={feedback.src} className={styles.feedback} href={feedback.src} target="_blank" rel="noopener noreferrer" aria-label={`Abrir depoimento ${index + 1} em tamanho maior`}>
-              <Image src={feedback.src} alt={feedback.alt} width={feedback.width} height={feedback.height} sizes="(max-width: 639px) 100vw, 45vw" />
-              <span>Ampliar depoimento <ArrowUpRight size={16} aria-hidden="true" /></span>
-            </a>)}
-          </TouchCarousel>
+            <SimpleTestimonials />
           </div>
         </section>
       </main>
