@@ -12,18 +12,21 @@ export default function TiltCard({
   className = "",
 }: TiltCardProps) {
   const cardRef = useRef<HTMLDivElement>(null);
+  const boundsRef = useRef<DOMRect | null>(null);
 
   const handleMouseMove = (e: MouseEvent<HTMLDivElement>) => {
     if (!cardRef.current) return;
-    const rect = cardRef.current.getBoundingClientRect();
+    // Measure once per hover. Measuring the tilted card on every movement
+    // feeds its changing bounds back into the rotation and causes shaking.
+    const rect = boundsRef.current ??= cardRef.current.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
     const centerX = rect.width / 2;
     const centerY = rect.height / 2;
     
     // Calcula a inclinação (15 graus max)
-    const rotateX = ((y - centerY) / centerY) * -15;
-    const rotateY = ((x - centerX) / centerX) * 15;
+    const rotateX = Math.max(-1, Math.min(1, (y - centerY) / centerY)) * -15;
+    const rotateY = Math.max(-1, Math.min(1, (x - centerX) / centerX)) * 15;
     
     cardRef.current.style.setProperty("--rx", `${rotateX}deg`);
     cardRef.current.style.setProperty("--ry", `${rotateY}deg`);
@@ -34,6 +37,7 @@ export default function TiltCard({
   };
 
   const handleMouseLeave = () => {
+    boundsRef.current = null;
     if (!cardRef.current) return;
     cardRef.current.style.setProperty("--rx", `0deg`);
     cardRef.current.style.setProperty("--ry", `0deg`);

@@ -275,7 +275,9 @@ export default function Hero() {
             trigger: sectionRef.current,
             start: "top top",
             end: "bottom bottom",
-            scrub: 0.65,
+            // Lenis already smooths the scroll. A second catch-up tween makes
+            // scenes drift behind it, especially when reversing the wheel.
+            scrub: true,
             onRefresh: syncSceneAnchors,
           },
         });

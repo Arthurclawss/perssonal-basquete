@@ -73,7 +73,9 @@ export default function SmoothScroll() {
     document.fonts.ready.then(() => { if (!cancelled) refresh(); });
     if (document.readyState === "complete") restoreHash();
     lenis.on("scroll", updateScrollTrigger);
-    gsap.ticker.add(updateLenis);
+    // Update scroll before GSAP renders this frame's animations, so both use
+    // the same position instead of rendering the previous frame's scroll.
+    gsap.ticker.add(updateLenis, false, true);
     gsap.ticker.lagSmoothing(0);
     return () => {
       cancelled = true;
