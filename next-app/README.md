@@ -22,11 +22,11 @@ This project uses [`next/font`](https://nextjs.org/docs/app/building-your-applic
 
 ## Versões responsivas
 
-- Com mouse/trackpad como apontador principal (`pointer: fine`) e suporte a hover: apresentação desktop. A largura, o zoom e o redimensionamento da janela não trocam o computador para a página mobile. Os efeitos e o layout internos continuam respeitando seus próprios breakpoints e as preferências de acessibilidade.
-- Com interação principal por toque ou sem suporte a hover: versão mobile, com rolagem nativa e controles de toque. Tablets continuam nessa versão em paisagem, mesmo com viewport maior que 1024 px, quando o apontador principal é o toque.
-- Notebooks com tela sensível ao toque continuam no desktop quando o apontador principal é mouse/trackpad. A seleção considera as capacidades de interação, sem depender do nome do aparelho; um tablet que se apresente ao navegador como mouse/trackpad também pode receber o desktop.
+- Viewport com largura a partir de 1024 px: apresentação web com efeitos de rolagem e cursor, independentemente de mouse, toque ou emulação de dispositivos. Uma viewport de 1839 × 1271 px recebe a versão web.
+- Viewport com largura abaixo de 1024 px: versão mobile, com rolagem nativa e controles de toque, mesmo quando houver mouse conectado.
+- A seleção depende exclusivamente da largura disponível em pixels CSS, sem identificar o tipo de aparelho. Tablets grandes também recebem a versão web quando atingirem 1024 px de largura.
 - A preferência por movimento reduzido é respeitada pelos efeitos da apresentação desktop e não troca a versão da página.
-- A seleção acompanha mudanças do apontador principal e do suporte a hover, sem depender da largura ou orientação. O CSS da primeira renderização e a consulta em `src/lib/experience.ts` devem permanecer iguais para evitar um flash da versão errada antes da hidratação.
+- A seleção acompanha mudanças de largura, inclusive ao redimensionar a janela, girar o aparelho ou alterar o zoom. O CSS da primeira renderização e a consulta em `src/lib/experience.ts` devem permanecer iguais para evitar um flash da versão errada antes da hidratação.
 
 ## Learn More
 

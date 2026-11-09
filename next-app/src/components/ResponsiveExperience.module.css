@@ -4,7 +4,7 @@
 
 /* Keep identical to DESKTOP_EXPERIENCE_QUERY in lib/experience.ts.
    Applied to server HTML so the mobile layout cannot flash on desktop. */
-@media (hover: hover) and (pointer: fine) {
+@media (min-width: 1024px) {
   .simple { display: none; }
   .boot { display: block; position: fixed; inset: 0; z-index: 100; background: #070707; }
 }
