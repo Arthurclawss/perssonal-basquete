@@ -20,6 +20,14 @@ You can start editing the page by modifying `app/page.tsx`. The page auto-update
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
+## Versões responsivas
+
+- Com mouse/trackpad como apontador principal (`pointer: fine`) e suporte a hover: apresentação desktop. A largura, o zoom e o redimensionamento da janela não trocam o computador para a página mobile. Os efeitos e o layout internos continuam respeitando seus próprios breakpoints e as preferências de acessibilidade.
+- Com interação principal por toque ou sem suporte a hover: versão mobile, com rolagem nativa e controles de toque. Tablets continuam nessa versão em paisagem, mesmo com viewport maior que 1024 px, quando o apontador principal é o toque.
+- Notebooks com tela sensível ao toque continuam no desktop quando o apontador principal é mouse/trackpad. A seleção considera as capacidades de interação, sem depender do nome do aparelho; um tablet que se apresente ao navegador como mouse/trackpad também pode receber o desktop.
+- A preferência por movimento reduzido é respeitada pelos efeitos da apresentação desktop e não troca a versão da página.
+- A seleção acompanha mudanças do apontador principal e do suporte a hover, sem depender da largura ou orientação. O CSS da primeira renderização e a consulta em `src/lib/experience.ts` devem permanecer iguais para evitar um flash da versão errada antes da hidratação.
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:
